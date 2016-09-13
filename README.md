@@ -10,10 +10,11 @@ Note: Brickus is a completely original and novel game. This game contains no blo
 * Simple chat
 * Implement a turn timer
 * Create a win notification
+* Add in more server-side checks to make sure people aren't cheating - keep track of piece values, player scores, and ids server side
 
 ---
 
-``` 
+```
 if(ye_love_me){
   keep_my_commandments();
 }
