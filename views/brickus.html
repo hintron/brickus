@@ -16,69 +16,75 @@
         player 3 = Red
         player 4 = Green
 
-        bitmap is the left to right, top to bottom representation of the piece, with 1's being a visible piece and 0's being an empty piece
-        Multiple peaces can have the same id, with different rotate ids
-        rotate count will indicate how many times the piece can be rotated (if not set, it means it can't be rotated)
+        Bitmap is the first row to last row, left to right, top to bottom representation of the piece, with 1's being a visible piece and 0's being an empty piece
+        The bitmap is row*col long
+        Multiple pieces can have the same id, with different rotate ids
+        Rotate count will indicate how many times the piece can be rotated (if not set, it means it can't be rotated)
         All but one of the rotated versions of each piece should always be hidden
      -->
 
-    <!-- .piece[data-id=1][data-rows=1][data-cols=1][data-bitmap="1"][data-player=1]>.tile_row>.tile -->
-    <!-- .piece[data-id=2][data-rows=1][data-cols=2][data-bitmap="11"][data-rotate-id=1][data-rotate-count=2][data-player=1]>(.tile_row>.tile+.tile) -->
-    <!-- .piece[data-id=2][data-rows=2][data-cols=1][data-bitmap="11"][data-rotate-id=2][data-rotate-count=2].hidden[data-player=1]>(.tile_row>.tile)*2 -->
-    <!-- .piece[data-id=3][data-rows=1][data-cols=3][data-bitmap="111"][data-rotate-id=1][data-rotate-count=2][data-player=1]>(.tile_row>.tile*3) -->
-    <!-- .piece[data-id=3][data-rows=3][data-cols=1][data-bitmap="111"][data-rotate-id=2][data-rotate-count=2].hidden[data-player=1]>(.tile_row>.tile)*3 -->
-    <!-- .piece[data-id=4][data-rows=1][data-cols=4][data-bitmap="1111"][data-rotate-id=1][data-rotate-count=2][data-player=1]>(.tile_row>.tile*4) -->
-    <!-- .piece[data-id=4][data-rows=4][data-cols=1][data-bitmap="1111"][data-rotate-id=2][data-rotate-count=2].hidden[data-player=1]>(.tile_row>.tile)*4 -->
-    <!-- .piece[data-id=5][data-rows=2][data-cols=2][data-bitmap="0111"][data-rotate-id=1][data-rotate-count=4][data-player=1]>(.tile_row>.tile.etile+.tile)+(.tile_row>.tile*2) -->
-    <!-- .piece[data-id=5][data-rows=2][data-cols=2][data-bitmap="1011"][data-rotate-id=2][data-rotate-count=4].hidden[data-player=1]>(.tile_row>.tile+.tile.etile)+(.tile_row>.tile*2) -->
-    <!-- .piece[data-id=5][data-rows=2][data-cols=2][data-bitmap="1101"][data-rotate-id=3][data-rotate-count=4].hidden[data-player=1]>(.tile_row>.tile*2)+(.tile_row>.tile.etile+.tile) -->
-    <!-- .piece[data-id=5][data-rows=2][data-cols=2][data-bitmap="1110"][data-rotate-id=4][data-rotate-count=4].hidden[data-player=1]>(.tile_row>.tile*2)+(.tile_row>.tile+.tile.etile) -->
-    <!-- .piece[data-id=6][data-rows=2][data-cols=2][data-bitmap="1111"][data-player=1]>(.tile_row>.tile*2)*2 -->
-    <!-- .piece[data-id=7][data-rows=2][data-cols=3][data-bitmap="010111"][data-rotate-id=1][data-rotate-count=4][data-player=1]>(.tile_row>.tile.etile+.tile+.tile.etile)+(.tile_row>.tile*3) -->
-    <!-- .piece[data-id=7][data-rows=3][data-cols=2][data-bitmap="101110"][data-rotate-id=2][data-rotate-count=4].hidden[data-player=1]>(.tile_row>.tile+.tile.etile)(.tile_row>.tile+.tile)+(.tile_row>.tile+.tile.etile) -->
-    <!-- .piece[data-id=7][data-rows=2][data-cols=3][data-bitmap="111010"][data-rotate-id=3][data-rotate-count=4].hidden[data-player=1]>(.tile_row>.tile*3)+(.tile_row>.tile.etile+.tile+.tile.etile) -->
-    <!-- .piece[data-id=7][data-rows=3][data-cols=2][data-bitmap="011101"][data-rotate-id=4][data-rotate-count=4].hidden[data-player=1]>(.tile_row>.tile.etile+.tile)(.tile_row>.tile+.tile)+(.tile_row>.tile.etile+.tile) -->
-    <!-- .piece[data-id=8][data-rows=2][data-cols=3][data-bitmap="100111"][data-rotate-id=1][data-rotate-count=8][data-player=1]>(.tile_row>.tile+.tile.etile+.tile.etile)+(.tile_row>.tile*3) -->
-    <!-- .piece[data-id=8][data-rows=3][data-cols=2][data-bitmap="111010"][data-rotate-id=2][data-rotate-count=8].hidden[data-player=1]>(.tile_row>.tile+.tile)+(.tile_row>.tile+.tile.etile)+(.tile_row>.tile+.tile.etile) -->
-    <!-- .piece[data-id=8][data-rows=2][data-cols=3][data-bitmap="111001"][data-rotate-id=3][data-rotate-count=8].hidden[data-player=1]>(.tile_row>.tile*3)+(.tile_row>.tile.etile+.tile.etile+.tile)-->
-    <!-- .piece[data-id=8][data-rows=3][data-cols=2][data-bitmap="010111"][data-rotate-id=4][data-rotate-count=8].hidden[data-player=1]>(.tile_row>.tile.etile+.tile)+(.tile_row>.tile.etile+.tile)+(.tile_row>.tile+.tile) -->
-    <!-- .piece[data-id=8][data-rows=2][data-cols=3][data-bitmap="001111"][data-rotate-id=5][data-rotate-count=8].hidden[data-player=1]>(.tile_row>.tile.etile+.tile.etile+.tile)+(.tile_row>.tile*3)-->
-    <!-- .piece[data-id=8][data-rows=3][data-cols=2][data-bitmap="101011"][data-rotate-id=6][data-rotate-count=8].hidden[data-player=1]>(.tile_row>.tile+.tile.etile)+(.tile_row>.tile+.tile.etile)+(.tile_row>.tile+.tile) -->
-    <!-- .piece[data-id=8][data-rows=2][data-cols=3][data-bitmap="111100"][data-rotate-id=7][data-rotate-count=8].hidden[data-player=1]>(.tile_row>.tile*3)+(.tile_row>.tile+.tile.etile+.tile.etile)-->
-    <!-- .piece[data-id=8][data-rows=3][data-cols=2][data-bitmap="110101"][data-rotate-id=8][data-rotate-count=8].hidden[data-player=1]>(.tile_row>.tile+.tile)+(.tile_row>.tile.etile+.tile)+(.tile_row>.tile.etile+.tile) -->
-    <!-- .piece[data-id=9][data-rows=2][data-cols=3][data-bitmap="011110"][data-rotate-id=1][data-rotate-count=4][data-player=1]>(.tile_row>.tile.etile+.tile+.tile)+(.tile_row>.tile+.tile+.tile.etile) -->
-    <!-- .piece[data-id=9][data-rows=3][data-cols=2][data-bitmap="101101"][data-rotate-id=2][data-rotate-count=4].hidden[data-player=1]>(.tile_row>.tile+.tile.etile)+(.tile_row>.tile+.tile)+(.tile_row>.tile.etile+.tile) -->
-    <!-- .piece[data-id=9][data-rows=3][data-cols=2][data-bitmap="011110"][data-rotate-id=3][data-rotate-count=4].hidden[data-player=1]>(.tile_row>.tile.etile+.tile)+(.tile_row>.tile+.tile)+(.tile_row>.tile+.tile.etile) -->
-    <!-- .piece[data-id=9][data-rows=2][data-cols=3][data-bitmap="110011"][data-rotate-id=4][data-rotate-count=4].hidden[data-player=1]>(.tile_row>.tile+.tile+.tile.etile)+(.tile_row>.tile.etile+.tile+.tile) -->
-    <!-- .piece[data-id=10][data-rows=3][data-cols=3][data-bitmap="010111010"][data-player=1]>(.tile_row>.tile.etile+.tile+.tile.etile)+(.tile_row>.tile+.tile+.tile)+(.tile_row>.tile.etile+.tile+.tile.etile) -->
-    <!-- .piece[data-id=11][data-rows=1][data-cols=5][data-bitmap="11111"][data-rotate-id=1][data-rotate-count=2][data-player=1]>(.tile_row>.tile*5) -->
-    <!-- .piece[data-id=11][data-rows=5][data-cols=1][data-bitmap="11111"][data-rotate-id=2][data-rotate-count=2].hidden[data-player=1]>(.tile_row>.tile)*5 -->
-    <!-- .piece[data-id=12][data-rows=3][data-cols=3][data-bitmap="011010110"][data-rotate-id=1][data-rotate-count=4][data-player=1]>(.tile_row>.tile.etile+.tile+.tile)+(.tile_row>.tile.etile+.tile+.tile.etile)+(.tile_row>.tile+.tile+.tile.etile) -->
-    <!-- .piece[data-id=12][data-rows=3][data-cols=3][data-bitmap="100111001"][data-rotate-id=2][data-rotate-count=4].hidden[data-player=1]>(.tile_row>.tile+.tile.etile+.tile.etile)+(.tile_row>.tile+.tile+.tile)+(.tile_row>.tile.etile+.tile.etile+.tile) -->
-    <!-- .piece[data-id=12][data-rows=3][data-cols=3][data-bitmap="001111100"][data-rotate-id=3][data-rotate-count=4].hidden[data-player=1]>(.tile_row>.tile.etile+.tile.etile+.tile)+(.tile_row>.tile+.tile+.tile)+(.tile_row>.tile+.tile.etile+.tile.etile) -->
-    <!-- .piece[data-id=12][data-rows=3][data-cols=3][data-bitmap="110010011"][data-rotate-id=4][data-rotate-count=4].hidden[data-player=1]>(.tile_row>.tile+.tile+.tile.etile)+(.tile_row>.tile.etile+.tile+.tile.etile)+(.tile_row>.tile.etile+.tile+.tile) -->
-    <!-- .piece[data-id=13][data-rows=2][data-cols=4][data-bitmap="10001111"][data-rotate-id=1][data-rotate-count=8][data-player=1]>(.tile_row>.tile+.tile.etile+.tile.etile+.tile.etile)+(.tile_row>.tile*4) -->
-    <!-- .piece[data-id=13][data-rows=4][data-cols=2][data-bitmap="11101010"][data-rotate-id=2][data-rotate-count=8].hidden[data-player=1]>(.tile_row>.tile+.tile)+(.tile_row>.tile+.tile.etile)*3 -->
-    <!-- .piece[data-id=13][data-rows=2][data-cols=4][data-bitmap="11110001"][data-rotate-id=3][data-rotate-count=8].hidden[data-player=1]>(.tile_row>.tile*4)+(.tile_row>.tile.etile*3+.tile) -->
-    <!-- .piece[data-id=13][data-rows=4][data-cols=2][data-bitmap="01010111"][data-rotate-id=4][data-rotate-count=8].hidden[data-player=1]>(.tile_row>.tile.etile+.tile)*3+(.tile_row>.tile+.tile) -->
-    <!-- .piece[data-id=13][data-rows=2][data-cols=4][data-bitmap="00011111"][data-rotate-id=5][data-rotate-count=8].hidden[data-player=1]>(.tile_row>.tile.etile*3+.tile)+(.tile_row>.tile*4) -->
-    <!-- .piece[data-id=13][data-rows=4][data-cols=2][data-bitmap="10101011"][data-rotate-id=6][data-rotate-count=8].hidden[data-player=1]>(.tile_row>.tile+.tile.etile)*3+(.tile_row>.tile+.tile) -->
-    <!-- .piece[data-id=13][data-rows=2][data-cols=4][data-bitmap="11111000"][data-rotate-id=7][data-rotate-count=8].hidden[data-player=1]>(.tile_row>.tile*4)+(.tile_row>.tile+.tile.etile*3) -->
-    <!-- .piece[data-id=13][data-rows=4][data-cols=2][data-bitmap="11010101"][data-rotate-id=8][data-rotate-count=8].hidden[data-player=1]>(.tile_row>.tile+.tile)+(.tile_row>.tile.etile+.tile)*3 -->
-    <!-- .piece[data-id=14][data-rows=3][data-cols=3][data-bitmap="010010111"][data-rotate-id=1][data-rotate-count=4][data-player=1]>(.tile_row>.tile.etile+.tile+.tile.etile)*2+(.tile_row>.tile*3) -->
-    <!-- .piece[data-id=14][data-rows=3][data-cols=3][data-bitmap="100111100"][data-rotate-id=2][data-rotate-count=4].hidden[data-player=1]>(.tile_row>.tile+.tile.etile*2)(.tile_row>.tile*3)+(.tile_row>.tile+.tile.etile*2) -->
-    <!-- .piece[data-id=14][data-rows=3][data-cols=3][data-bitmap="111010010"][data-rotate-id=3][data-rotate-count=4].hidden[data-player=1]>(.tile_row>.tile*3)+(.tile_row>.tile.etile+.tile+.tile.etile)*2 -->
-    <!-- .piece[data-id=14][data-rows=3][data-cols=3][data-bitmap="001111001"][data-rotate-id=4][data-rotate-count=4].hidden[data-player=1]>(.tile_row>.tile.etile*2+.tile)(.tile_row>.tile*3)+(.tile_row>.tile.etile*2+.tile) -->
-    <!-- .piece[data-id=15][data-rows=3][data-cols=3][data-bitmap="111001001"][data-rotate-id=1][data-rotate-count=4][data-player=1]>(.tile_row>.tile*3)+(.tile_row>.tile.etile*2+.tile)*2 -->
-    <!-- .piece[data-id=15][data-rows=3][data-cols=3][data-bitmap="001001111"][data-rotate-id=2][data-rotate-count=4][data-player=1].hidden>(.tile_row>.tile.etile*2+.tile)*2+(.tile_row>.tile*3) -->
-    <!-- .piece[data-id=15][data-rows=3][data-cols=3][data-bitmap="100100111"][data-rotate-id=3][data-rotate-count=4][data-player=1].hidden>(.tile_row>.tile+.tile.etile*2)*2+(.tile_row>.tile*3) -->
-    <!-- .piece[data-id=15][data-rows=3][data-cols=3][data-bitmap="111100100"][data-rotate-id=4][data-rotate-count=4][data-player=1].hidden>(.tile_row>.tile*3)+(.tile_row>.tile+.tile.etile*2)*2 -->
+<!--
+
+
+    .piece[data-id=1][data-rows=1][data-cols=1][data-bitmap="1"][data-player=1]>.tile_row>.tile
+    .piece[data-id=2][data-rows=1][data-cols=2][data-bitmap="11"][data-rotate-id=1][data-rotate-count=2][data-player=1]>(.tile_row>.tile+.tile)
+    .piece[data-id=2][data-rows=2][data-cols=1][data-bitmap="11"][data-rotate-id=2][data-rotate-count=2].hidden[data-player=1]>(.tile_row>.tile)*2
+    .piece[data-id=3][data-rows=1][data-cols=3][data-bitmap="111"][data-rotate-id=1][data-rotate-count=2][data-player=1]>(.tile_row>.tile*3)
+    .piece[data-id=3][data-rows=3][data-cols=1][data-bitmap="111"][data-rotate-id=2][data-rotate-count=2].hidden[data-player=1]>(.tile_row>.tile)*3
+    .piece[data-id=4][data-rows=1][data-cols=4][data-bitmap="1111"][data-rotate-id=1][data-rotate-count=2][data-player=1]>(.tile_row>.tile*4)
+    .piece[data-id=4][data-rows=4][data-cols=1][data-bitmap="1111"][data-rotate-id=2][data-rotate-count=2].hidden[data-player=1]>(.tile_row>.tile)*4
+    .piece[data-id=5][data-rows=2][data-cols=2][data-bitmap="0111"][data-rotate-id=1][data-rotate-count=4][data-player=1]>(.tile_row>.tile.etile+.tile)+(.tile_row>.tile*2)
+    .piece[data-id=5][data-rows=2][data-cols=2][data-bitmap="1011"][data-rotate-id=2][data-rotate-count=4].hidden[data-player=1]>(.tile_row>.tile+.tile.etile)+(.tile_row>.tile*2)
+    .piece[data-id=5][data-rows=2][data-cols=2][data-bitmap="1101"][data-rotate-id=3][data-rotate-count=4].hidden[data-player=1]>(.tile_row>.tile*2)+(.tile_row>.tile.etile+.tile)
+    .piece[data-id=5][data-rows=2][data-cols=2][data-bitmap="1110"][data-rotate-id=4][data-rotate-count=4].hidden[data-player=1]>(.tile_row>.tile*2)+(.tile_row>.tile+.tile.etile)
+    .piece[data-id=6][data-rows=2][data-cols=2][data-bitmap="1111"][data-player=1]>(.tile_row>.tile*2)*2
+    .piece[data-id=7][data-rows=2][data-cols=3][data-bitmap="010111"][data-rotate-id=1][data-rotate-count=4][data-player=1]>(.tile_row>.tile.etile+.tile+.tile.etile)+(.tile_row>.tile*3)
+    .piece[data-id=7][data-rows=3][data-cols=2][data-bitmap="101110"][data-rotate-id=2][data-rotate-count=4].hidden[data-player=1]>(.tile_row>.tile+.tile.etile)(.tile_row>.tile+.tile)+(.tile_row>.tile+.tile.etile)
+    .piece[data-id=7][data-rows=2][data-cols=3][data-bitmap="111010"][data-rotate-id=3][data-rotate-count=4].hidden[data-player=1]>(.tile_row>.tile*3)+(.tile_row>.tile.etile+.tile+.tile.etile)
+    .piece[data-id=7][data-rows=3][data-cols=2][data-bitmap="011101"][data-rotate-id=4][data-rotate-count=4].hidden[data-player=1]>(.tile_row>.tile.etile+.tile)(.tile_row>.tile+.tile)+(.tile_row>.tile.etile+.tile)
+    .piece[data-id=8][data-rows=2][data-cols=3][data-bitmap="100111"][data-rotate-id=1][data-rotate-count=8][data-player=1]>(.tile_row>.tile+.tile.etile+.tile.etile)+(.tile_row>.tile*3)
+    .piece[data-id=8][data-rows=3][data-cols=2][data-bitmap="111010"][data-rotate-id=2][data-rotate-count=8].hidden[data-player=1]>(.tile_row>.tile+.tile)+(.tile_row>.tile+.tile.etile)+(.tile_row>.tile+.tile.etile)
+    .piece[data-id=8][data-rows=2][data-cols=3][data-bitmap="111001"][data-rotate-id=3][data-rotate-count=8].hidden[data-player=1]>(.tile_row>.tile*3)+(.tile_row>.tile.etile+.tile.etile+.tile)
+    .piece[data-id=8][data-rows=3][data-cols=2][data-bitmap="010111"][data-rotate-id=4][data-rotate-count=8].hidden[data-player=1]>(.tile_row>.tile.etile+.tile)+(.tile_row>.tile.etile+.tile)+(.tile_row>.tile+.tile)
+    .piece[data-id=8][data-rows=2][data-cols=3][data-bitmap="001111"][data-rotate-id=5][data-rotate-count=8].hidden[data-player=1]>(.tile_row>.tile.etile+.tile.etile+.tile)+(.tile_row>.tile*3)
+    .piece[data-id=8][data-rows=3][data-cols=2][data-bitmap="101011"][data-rotate-id=6][data-rotate-count=8].hidden[data-player=1]>(.tile_row>.tile+.tile.etile)+(.tile_row>.tile+.tile.etile)+(.tile_row>.tile+.tile)
+    .piece[data-id=8][data-rows=2][data-cols=3][data-bitmap="111100"][data-rotate-id=7][data-rotate-count=8].hidden[data-player=1]>(.tile_row>.tile*3)+(.tile_row>.tile+.tile.etile+.tile.etile)
+    .piece[data-id=8][data-rows=3][data-cols=2][data-bitmap="110101"][data-rotate-id=8][data-rotate-count=8].hidden[data-player=1]>(.tile_row>.tile+.tile)+(.tile_row>.tile.etile+.tile)+(.tile_row>.tile.etile+.tile)
+    .piece[data-id=9][data-rows=2][data-cols=3][data-bitmap="011110"][data-rotate-id=1][data-rotate-count=4][data-player=1]>(.tile_row>.tile.etile+.tile+.tile)+(.tile_row>.tile+.tile+.tile.etile)
+    .piece[data-id=9][data-rows=3][data-cols=2][data-bitmap="101101"][data-rotate-id=2][data-rotate-count=4].hidden[data-player=1]>(.tile_row>.tile+.tile.etile)+(.tile_row>.tile+.tile)+(.tile_row>.tile.etile+.tile)
+    .piece[data-id=9][data-rows=3][data-cols=2][data-bitmap="011110"][data-rotate-id=3][data-rotate-count=4].hidden[data-player=1]>(.tile_row>.tile.etile+.tile)+(.tile_row>.tile+.tile)+(.tile_row>.tile+.tile.etile)
+    .piece[data-id=9][data-rows=2][data-cols=3][data-bitmap="110011"][data-rotate-id=4][data-rotate-count=4].hidden[data-player=1]>(.tile_row>.tile+.tile+.tile.etile)+(.tile_row>.tile.etile+.tile+.tile)
+    .piece[data-id=10][data-rows=3][data-cols=3][data-bitmap="010111010"][data-player=1]>(.tile_row>.tile.etile+.tile+.tile.etile)+(.tile_row>.tile+.tile+.tile)+(.tile_row>.tile.etile+.tile+.tile.etile)
+    .piece[data-id=11][data-rows=1][data-cols=5][data-bitmap="11111"][data-rotate-id=1][data-rotate-count=2][data-player=1]>(.tile_row>.tile*5)
+    .piece[data-id=11][data-rows=5][data-cols=1][data-bitmap="11111"][data-rotate-id=2][data-rotate-count=2].hidden[data-player=1]>(.tile_row>.tile)*5
+    .piece[data-id=12][data-rows=3][data-cols=3][data-bitmap="011010110"][data-rotate-id=1][data-rotate-count=4][data-player=1]>(.tile_row>.tile.etile+.tile+.tile)+(.tile_row>.tile.etile+.tile+.tile.etile)+(.tile_row>.tile+.tile+.tile.etile)
+    .piece[data-id=12][data-rows=3][data-cols=3][data-bitmap="100111001"][data-rotate-id=2][data-rotate-count=4].hidden[data-player=1]>(.tile_row>.tile+.tile.etile+.tile.etile)+(.tile_row>.tile+.tile+.tile)+(.tile_row>.tile.etile+.tile.etile+.tile)
+    .piece[data-id=12][data-rows=3][data-cols=3][data-bitmap="001111100"][data-rotate-id=3][data-rotate-count=4].hidden[data-player=1]>(.tile_row>.tile.etile+.tile.etile+.tile)+(.tile_row>.tile+.tile+.tile)+(.tile_row>.tile+.tile.etile+.tile.etile)
+    .piece[data-id=12][data-rows=3][data-cols=3][data-bitmap="110010011"][data-rotate-id=4][data-rotate-count=4].hidden[data-player=1]>(.tile_row>.tile+.tile+.tile.etile)+(.tile_row>.tile.etile+.tile+.tile.etile)+(.tile_row>.tile.etile+.tile+.tile)
+    .piece[data-id=13][data-rows=2][data-cols=4][data-bitmap="10001111"][data-rotate-id=1][data-rotate-count=8][data-player=1]>(.tile_row>.tile+.tile.etile+.tile.etile+.tile.etile)+(.tile_row>.tile*4)
+    .piece[data-id=13][data-rows=4][data-cols=2][data-bitmap="11101010"][data-rotate-id=2][data-rotate-count=8].hidden[data-player=1]>(.tile_row>.tile+.tile)+(.tile_row>.tile+.tile.etile)*3
+    .piece[data-id=13][data-rows=2][data-cols=4][data-bitmap="11110001"][data-rotate-id=3][data-rotate-count=8].hidden[data-player=1]>(.tile_row>.tile*4)+(.tile_row>.tile.etile*3+.tile)
+    .piece[data-id=13][data-rows=4][data-cols=2][data-bitmap="01010111"][data-rotate-id=4][data-rotate-count=8].hidden[data-player=1]>(.tile_row>.tile.etile+.tile)*3+(.tile_row>.tile+.tile)
+    .piece[data-id=13][data-rows=2][data-cols=4][data-bitmap="00011111"][data-rotate-id=5][data-rotate-count=8].hidden[data-player=1]>(.tile_row>.tile.etile*3+.tile)+(.tile_row>.tile*4)
+    .piece[data-id=13][data-rows=4][data-cols=2][data-bitmap="10101011"][data-rotate-id=6][data-rotate-count=8].hidden[data-player=1]>(.tile_row>.tile+.tile.etile)*3+(.tile_row>.tile+.tile)
+    .piece[data-id=13][data-rows=2][data-cols=4][data-bitmap="11111000"][data-rotate-id=7][data-rotate-count=8].hidden[data-player=1]>(.tile_row>.tile*4)+(.tile_row>.tile+.tile.etile*3)
+    .piece[data-id=13][data-rows=4][data-cols=2][data-bitmap="11010101"][data-rotate-id=8][data-rotate-count=8].hidden[data-player=1]>(.tile_row>.tile+.tile)+(.tile_row>.tile.etile+.tile)*3
+    .piece[data-id=14][data-rows=3][data-cols=3][data-bitmap="010010111"][data-rotate-id=1][data-rotate-count=4][data-player=1]>(.tile_row>.tile.etile+.tile+.tile.etile)*2+(.tile_row>.tile*3)
+    .piece[data-id=14][data-rows=3][data-cols=3][data-bitmap="100111100"][data-rotate-id=2][data-rotate-count=4].hidden[data-player=1]>(.tile_row>.tile+.tile.etile*2)(.tile_row>.tile*3)+(.tile_row>.tile+.tile.etile*2)
+    .piece[data-id=14][data-rows=3][data-cols=3][data-bitmap="111010010"][data-rotate-id=3][data-rotate-count=4].hidden[data-player=1]>(.tile_row>.tile*3)+(.tile_row>.tile.etile+.tile+.tile.etile)*2
+    .piece[data-id=14][data-rows=3][data-cols=3][data-bitmap="001111001"][data-rotate-id=4][data-rotate-count=4].hidden[data-player=1]>(.tile_row>.tile.etile*2+.tile)(.tile_row>.tile*3)+(.tile_row>.tile.etile*2+.tile)
+    .piece[data-id=15][data-rows=3][data-cols=3][data-bitmap="111001001"][data-rotate-id=1][data-rotate-count=4][data-player=1]>(.tile_row>.tile*3)+(.tile_row>.tile.etile*2+.tile)*2
+    .piece[data-id=15][data-rows=3][data-cols=3][data-bitmap="001001111"][data-rotate-id=2][data-rotate-count=4][data-player=1].hidden>(.tile_row>.tile.etile*2+.tile)*2+(.tile_row>.tile*3)
+    .piece[data-id=15][data-rows=3][data-cols=3][data-bitmap="100100111"][data-rotate-id=3][data-rotate-count=4][data-player=1].hidden>(.tile_row>.tile+.tile.etile*2)*2+(.tile_row>.tile*3)
+    .piece[data-id=15][data-rows=3][data-cols=3][data-bitmap="111100100"][data-rotate-id=4][data-rotate-count=4][data-player=1].hidden>(.tile_row>.tile*3)+(.tile_row>.tile+.tile.etile*2)*2
+
+
+ -->
 
 
 
 
     <!-- TODO: Finish adding in more pieces and their rotational variants! -->
-    <!-- .piece[data-id=16][data-rows=2][data-cols=3][data-bitmap="011110"][data-player=1]>(.tile_row>.tile.etile+.tile+.tile)+(.tile_row>.tile+.tile+.tile.etile) -->
 
 
 
