@@ -1,0 +1,2124 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Brickus</title>
+    <link rel="stylesheet" href="css/brickus.css">
+    <script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>
+    <script src="js/brickus.js"></script>
+</head>
+<body>
+    <!-- div#player1_toolbar.toolbar+div#player2_toolbar.toolbar+div#gameboard_container+div#player3_toolbar.toolbar+div#player4_toolbar.toolbar -->
+    <!--
+        player 1 = Yellow
+        player 2 = Blue
+        player 3 = Red
+        player 4 = Green
+
+        bitmap is the left to right, top to bottom representation of the piece, with 1's being a visible piece and 0's being an empty piece
+        Multiple peaces can have the same id, with different rotate ids
+        rotate count will indicate how many times the piece can be rotated (if not set, it means it can't be rotated)
+        All but one of the rotated versions of each piece should always be hidden
+     -->
+
+    <!-- .piece[data-id=1][data-rows=1][data-cols=1][data-bitmap="1"][data-player=1]>.tile_row>.tile -->
+    <!-- .piece[data-id=2][data-rows=1][data-cols=2][data-bitmap="11"][data-rotate-id=1][data-rotate-count=2][data-player=1]>(.tile_row>.tile+.tile) -->
+    <!-- .piece[data-id=2][data-rows=2][data-cols=1][data-bitmap="11"][data-rotate-id=2][data-rotate-count=2].hidden[data-player=1]>(.tile_row>.tile)*2 -->
+    <!-- .piece[data-id=3][data-rows=1][data-cols=3][data-bitmap="111"][data-rotate-id=1][data-rotate-count=2][data-player=1]>(.tile_row>.tile*3) -->
+    <!-- .piece[data-id=3][data-rows=3][data-cols=1][data-bitmap="111"][data-rotate-id=2][data-rotate-count=2].hidden[data-player=1]>(.tile_row>.tile)*3 -->
+    <!-- .piece[data-id=4][data-rows=1][data-cols=4][data-bitmap="1111"][data-rotate-id=1][data-rotate-count=2][data-player=1]>(.tile_row>.tile*4) -->
+    <!-- .piece[data-id=4][data-rows=4][data-cols=1][data-bitmap="1111"][data-rotate-id=2][data-rotate-count=2].hidden[data-player=1]>(.tile_row>.tile)*4 -->
+    <!-- .piece[data-id=5][data-rows=2][data-cols=2][data-bitmap="0111"][data-rotate-id=1][data-rotate-count=4][data-player=1]>(.tile_row>.tile.etile+.tile)+(.tile_row>.tile*2) -->
+    <!-- .piece[data-id=5][data-rows=2][data-cols=2][data-bitmap="1011"][data-rotate-id=2][data-rotate-count=4].hidden[data-player=1]>(.tile_row>.tile+.tile.etile)+(.tile_row>.tile*2) -->
+    <!-- .piece[data-id=5][data-rows=2][data-cols=2][data-bitmap="1101"][data-rotate-id=3][data-rotate-count=4].hidden[data-player=1]>(.tile_row>.tile*2)+(.tile_row>.tile.etile+.tile) -->
+    <!-- .piece[data-id=5][data-rows=2][data-cols=2][data-bitmap="1110"][data-rotate-id=4][data-rotate-count=4].hidden[data-player=1]>(.tile_row>.tile*2)+(.tile_row>.tile+.tile.etile) -->
+    <!-- .piece[data-id=6][data-rows=2][data-cols=2][data-bitmap="1111"][data-player=1]>(.tile_row>.tile*2)*2 -->
+    <!-- .piece[data-id=7][data-rows=2][data-cols=3][data-bitmap="010111"][data-rotate-id=1][data-rotate-count=4][data-player=1]>(.tile_row>.tile.etile+.tile+.tile.etile)+(.tile_row>.tile*3) -->
+    <!-- .piece[data-id=7][data-rows=3][data-cols=2][data-bitmap="101110"][data-rotate-id=2][data-rotate-count=4].hidden[data-player=1]>(.tile_row>.tile+.tile.etile)(.tile_row>.tile+.tile)+(.tile_row>.tile+.tile.etile) -->
+    <!-- .piece[data-id=7][data-rows=2][data-cols=3][data-bitmap="111010"][data-rotate-id=3][data-rotate-count=4].hidden[data-player=1]>(.tile_row>.tile*3)+(.tile_row>.tile.etile+.tile+.tile.etile) -->
+    <!-- .piece[data-id=7][data-rows=3][data-cols=2][data-bitmap="011101"][data-rotate-id=4][data-rotate-count=4].hidden[data-player=1]>(.tile_row>.tile.etile+.tile)(.tile_row>.tile+.tile)+(.tile_row>.tile.etile+.tile) -->
+    <!-- .piece[data-id=8][data-rows=2][data-cols=3][data-bitmap="100111"][data-rotate-id=1][data-rotate-count=8][data-player=1]>(.tile_row>.tile+.tile.etile+.tile.etile)+(.tile_row>.tile*3) -->
+    <!-- .piece[data-id=8][data-rows=3][data-cols=2][data-bitmap="111010"][data-rotate-id=2][data-rotate-count=8].hidden[data-player=1]>(.tile_row>.tile+.tile)+(.tile_row>.tile+.tile.etile)+(.tile_row>.tile+.tile.etile) -->
+    <!-- .piece[data-id=8][data-rows=2][data-cols=3][data-bitmap="111001"][data-rotate-id=3][data-rotate-count=8].hidden[data-player=1]>(.tile_row>.tile*3)+(.tile_row>.tile.etile+.tile.etile+.tile)-->
+    <!-- .piece[data-id=8][data-rows=3][data-cols=2][data-bitmap="010111"][data-rotate-id=4][data-rotate-count=8].hidden[data-player=1]>(.tile_row>.tile.etile+.tile)+(.tile_row>.tile.etile+.tile)+(.tile_row>.tile+.tile) -->
+    <!-- .piece[data-id=8][data-rows=2][data-cols=3][data-bitmap="001111"][data-rotate-id=5][data-rotate-count=8].hidden[data-player=1]>(.tile_row>.tile.etile+.tile.etile+.tile)+(.tile_row>.tile*3)-->
+    <!-- .piece[data-id=8][data-rows=3][data-cols=2][data-bitmap="101011"][data-rotate-id=6][data-rotate-count=8].hidden[data-player=1]>(.tile_row>.tile+.tile.etile)+(.tile_row>.tile+.tile.etile)+(.tile_row>.tile+.tile) -->
+    <!-- .piece[data-id=8][data-rows=2][data-cols=3][data-bitmap="111100"][data-rotate-id=7][data-rotate-count=8].hidden[data-player=1]>(.tile_row>.tile*3)+(.tile_row>.tile+.tile.etile+.tile.etile)-->
+    <!-- .piece[data-id=8][data-rows=3][data-cols=2][data-bitmap="110101"][data-rotate-id=8][data-rotate-count=8].hidden[data-player=1]>(.tile_row>.tile+.tile)+(.tile_row>.tile.etile+.tile)+(.tile_row>.tile.etile+.tile) -->
+    <!-- .piece[data-id=9][data-rows=2][data-cols=3][data-bitmap="011110"][data-rotate-id=1][data-rotate-count=4][data-player=1]>(.tile_row>.tile.etile+.tile+.tile)+(.tile_row>.tile+.tile+.tile.etile) -->
+    <!-- .piece[data-id=9][data-rows=3][data-cols=2][data-bitmap="101101"][data-rotate-id=2][data-rotate-count=4].hidden[data-player=1]>(.tile_row>.tile+.tile.etile)+(.tile_row>.tile+.tile)+(.tile_row>.tile.etile+.tile) -->
+    <!-- .piece[data-id=9][data-rows=3][data-cols=2][data-bitmap="011110"][data-rotate-id=3][data-rotate-count=4].hidden[data-player=1]>(.tile_row>.tile.etile+.tile)+(.tile_row>.tile+.tile)+(.tile_row>.tile+.tile.etile) -->
+    <!-- .piece[data-id=9][data-rows=2][data-cols=3][data-bitmap="110011"][data-rotate-id=4][data-rotate-count=4].hidden[data-player=1]>(.tile_row>.tile+.tile+.tile.etile)+(.tile_row>.tile.etile+.tile+.tile) -->
+    <!-- .piece[data-id=10][data-rows=3][data-cols=3][data-bitmap="010111010"][data-player=1]>(.tile_row>.tile.etile+.tile+.tile.etile)+(.tile_row>.tile+.tile+.tile)+(.tile_row>.tile.etile+.tile+.tile.etile) -->
+    <!-- .piece[data-id=11][data-rows=1][data-cols=5][data-bitmap="11111"][data-rotate-id=1][data-rotate-count=2][data-player=1]>(.tile_row>.tile*5) -->
+    <!-- .piece[data-id=11][data-rows=5][data-cols=1][data-bitmap="11111"][data-rotate-id=2][data-rotate-count=2].hidden[data-player=1]>(.tile_row>.tile)*5 -->
+    <!-- .piece[data-id=12][data-rows=3][data-cols=3][data-bitmap="011010110"][data-rotate-id=1][data-rotate-count=4][data-player=1]>(.tile_row>.tile.etile+.tile+.tile)+(.tile_row>.tile.etile+.tile+.tile.etile)+(.tile_row>.tile+.tile+.tile.etile) -->
+    <!-- .piece[data-id=12][data-rows=3][data-cols=3][data-bitmap="100111001"][data-rotate-id=2][data-rotate-count=4].hidden[data-player=1]>(.tile_row>.tile+.tile.etile+.tile.etile)+(.tile_row>.tile+.tile+.tile)+(.tile_row>.tile.etile+.tile.etile+.tile) -->
+    <!-- .piece[data-id=12][data-rows=3][data-cols=3][data-bitmap="001111100"][data-rotate-id=3][data-rotate-count=4].hidden[data-player=1]>(.tile_row>.tile.etile+.tile.etile+.tile)+(.tile_row>.tile+.tile+.tile)+(.tile_row>.tile+.tile.etile+.tile.etile) -->
+    <!-- .piece[data-id=12][data-rows=3][data-cols=3][data-bitmap="110010011"][data-rotate-id=4][data-rotate-count=4].hidden[data-player=1]>(.tile_row>.tile+.tile+.tile.etile)+(.tile_row>.tile.etile+.tile+.tile.etile)+(.tile_row>.tile.etile+.tile+.tile) -->
+
+
+
+    <!-- TODO: Finish adding in more pieces and their rotational variants! -->
+    <!-- .piece[data-id=16][data-rows=2][data-cols=3][data-bitmap="011110"][data-player=1]>(.tile_row>.tile.etile+.tile+.tile)+(.tile_row>.tile+.tile+.tile.etile) -->
+
+
+
+
+    <div id="player1_toolbar" class="toolbar">
+        <div>
+            <span id="player1_name">*********</span>
+            <div id="player1_score" class="score">0</div>
+        </div>
+
+        <!--     **************        -->
+        <!--      YELLOW PIECES       -->
+        <!--     **************        -->
+
+
+
+
+
+
+        <div class="piece" data-id="1" data-rows="1" data-cols="1" data-bitmap="1" data-player="1">
+            <div class="tile_row">
+                <div class="tile"></div>
+            </div>
+        </div>
+        <div class="piece" data-id="2" data-rows="1" data-cols="2" data-bitmap="11" data-rotate-id="1" data-rotate-count="2" data-player="1">
+            <div class="tile_row">
+                <div class="tile"></div>
+                <div class="tile"></div>
+            </div>
+        </div>
+        <div class="piece hidden" data-id="2" data-rows="2" data-cols="1" data-bitmap="11" data-rotate-id="2" data-rotate-count="2" data-player="1">
+            <div class="tile_row">
+                <div class="tile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile"></div>
+            </div>
+        </div>
+        <div class="piece" data-id="3" data-rows="1" data-cols="3" data-bitmap="111" data-rotate-id="1" data-rotate-count="2" data-player="1">
+            <div class="tile_row">
+                <div class="tile"></div>
+                <div class="tile"></div>
+                <div class="tile"></div>
+            </div>
+        </div>
+        <div class="piece hidden" data-id="3" data-rows="3" data-cols="1" data-bitmap="111" data-rotate-id="2" data-rotate-count="2" data-player="1">
+            <div class="tile_row">
+                <div class="tile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile"></div>
+            </div>
+        </div>
+        <div class="piece" data-id="4" data-rows="1" data-cols="4" data-bitmap="1111" data-rotate-id="1" data-rotate-count="2" data-player="1">
+            <div class="tile_row">
+                <div class="tile"></div>
+                <div class="tile"></div>
+                <div class="tile"></div>
+                <div class="tile"></div>
+            </div>
+        </div>
+        <div class="piece hidden" data-id="4" data-rows="4" data-cols="1" data-bitmap="1111" data-rotate-id="2" data-rotate-count="2" data-player="1">
+            <div class="tile_row">
+                <div class="tile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile"></div>
+            </div>
+        </div>
+        <div class="piece" data-id="5" data-rows="2" data-cols="2" data-bitmap="0111" data-rotate-id="1" data-rotate-count="4" data-player="1">
+            <div class="tile_row">
+                <div class="tile etile"></div>
+                <div class="tile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile"></div>
+                <div class="tile"></div>
+            </div>
+        </div>
+        <div class="piece hidden" data-id="5" data-rows="2" data-cols="2" data-bitmap="1011" data-rotate-id="2" data-rotate-count="4" data-player="1">
+            <div class="tile_row">
+                <div class="tile"></div>
+                <div class="tile etile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile"></div>
+                <div class="tile"></div>
+            </div>
+        </div>
+        <div class="piece hidden" data-id="5" data-rows="2" data-cols="2" data-bitmap="1101" data-rotate-id="3" data-rotate-count="4" data-player="1">
+            <div class="tile_row">
+                <div class="tile"></div>
+                <div class="tile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile etile"></div>
+                <div class="tile"></div>
+            </div>
+        </div>
+        <div class="piece hidden" data-id="5" data-rows="2" data-cols="2" data-bitmap="1110" data-rotate-id="4" data-rotate-count="4" data-player="1">
+            <div class="tile_row">
+                <div class="tile"></div>
+                <div class="tile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile"></div>
+                <div class="tile etile"></div>
+            </div>
+        </div>
+        <div class="piece" data-id="6" data-rows="2" data-cols="2" data-bitmap="1111" data-player="1">
+            <div class="tile_row">
+                <div class="tile"></div>
+                <div class="tile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile"></div>
+                <div class="tile"></div>
+            </div>
+        </div>
+        <div class="piece" data-id="7" data-rows="2" data-cols="3" data-bitmap="010111" data-rotate-id="1" data-rotate-count="4" data-player="1">
+            <div class="tile_row">
+                <div class="tile etile"></div>
+                <div class="tile"></div>
+                <div class="tile etile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile"></div>
+                <div class="tile"></div>
+                <div class="tile"></div>
+            </div>
+        </div>
+        <div class="piece hidden" data-id="7" data-rows="3" data-cols="2" data-bitmap="101110" data-rotate-id="2" data-rotate-count="4" data-player="1">
+            <div class="tile_row">
+                <div class="tile"></div>
+                <div class="tile etile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile"></div>
+                <div class="tile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile"></div>
+                <div class="tile etile"></div>
+            </div>
+        </div>
+        <div class="piece hidden" data-id="7" data-rows="2" data-cols="3" data-bitmap="111010" data-rotate-id="3" data-rotate-count="4" data-player="1">
+            <div class="tile_row">
+                <div class="tile"></div>
+                <div class="tile"></div>
+                <div class="tile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile etile"></div>
+                <div class="tile"></div>
+                <div class="tile etile"></div>
+            </div>
+        </div>
+        <div class="piece hidden" data-id="7" data-rows="3" data-cols="2" data-bitmap="011101" data-rotate-id="4" data-rotate-count="4" data-player="1">
+            <div class="tile_row">
+                <div class="tile etile"></div>
+                <div class="tile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile"></div>
+                <div class="tile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile etile"></div>
+                <div class="tile"></div>
+            </div>
+        </div>
+        <div class="piece" data-id="8" data-rows="2" data-cols="3" data-bitmap="100111" data-rotate-id="1" data-rotate-count="8" data-player="1">
+            <div class="tile_row">
+                <div class="tile"></div>
+                <div class="tile etile"></div>
+                <div class="tile etile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile"></div>
+                <div class="tile"></div>
+                <div class="tile"></div>
+            </div>
+        </div>
+        <div class="piece hidden" data-id="8" data-rows="3" data-cols="2" data-bitmap="111010" data-rotate-id="2" data-rotate-count="8" data-player="1">
+            <div class="tile_row">
+                <div class="tile"></div>
+                <div class="tile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile"></div>
+                <div class="tile etile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile"></div>
+                <div class="tile etile"></div>
+            </div>
+        </div>
+        <div class="piece hidden" data-id="8" data-rows="2" data-cols="3" data-bitmap="111001" data-rotate-id="3" data-rotate-count="8" data-player="1">
+            <div class="tile_row">
+                <div class="tile"></div>
+                <div class="tile"></div>
+                <div class="tile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile etile"></div>
+                <div class="tile etile"></div>
+                <div class="tile"></div>
+            </div>
+        </div>
+        <div class="piece hidden" data-id="8" data-rows="3" data-cols="2" data-bitmap="010111" data-rotate-id="4" data-rotate-count="8" data-player="1">
+            <div class="tile_row">
+                <div class="tile etile"></div>
+                <div class="tile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile etile"></div>
+                <div class="tile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile"></div>
+                <div class="tile"></div>
+            </div>
+        </div>
+        <div class="piece hidden" data-id="8" data-rows="2" data-cols="3" data-bitmap="001111" data-rotate-id="5" data-rotate-count="8" data-player="1">
+            <div class="tile_row">
+                <div class="tile etile"></div>
+                <div class="tile etile"></div>
+                <div class="tile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile"></div>
+                <div class="tile"></div>
+                <div class="tile"></div>
+            </div>
+        </div>
+        <div class="piece hidden" data-id="8" data-rows="3" data-cols="2" data-bitmap="101011" data-rotate-id="6" data-rotate-count="8" data-player="1">
+            <div class="tile_row">
+                <div class="tile"></div>
+                <div class="tile etile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile"></div>
+                <div class="tile etile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile"></div>
+                <div class="tile"></div>
+            </div>
+        </div>
+        <div class="piece hidden" data-id="8" data-rows="2" data-cols="3" data-bitmap="111100" data-rotate-id="7" data-rotate-count="8" data-player="1">
+            <div class="tile_row">
+                <div class="tile"></div>
+                <div class="tile"></div>
+                <div class="tile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile"></div>
+                <div class="tile etile"></div>
+                <div class="tile etile"></div>
+            </div>
+        </div>
+        <div class="piece hidden" data-id="8" data-rows="3" data-cols="2" data-bitmap="110101" data-rotate-id="8" data-rotate-count="8" data-player="1">
+            <div class="tile_row">
+                <div class="tile"></div>
+                <div class="tile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile etile"></div>
+                <div class="tile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile etile"></div>
+                <div class="tile"></div>
+            </div>
+        </div>
+        <div class="piece" data-id="9" data-rows="2" data-cols="3" data-bitmap="011110" data-rotate-id="1" data-rotate-count="4" data-player="1">
+            <div class="tile_row">
+                <div class="tile etile"></div>
+                <div class="tile"></div>
+                <div class="tile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile"></div>
+                <div class="tile"></div>
+                <div class="tile etile"></div>
+            </div>
+        </div>
+        <div class="piece hidden" data-id="9" data-rows="3" data-cols="2" data-bitmap="101101" data-rotate-id="2" data-rotate-count="4" data-player="1">
+            <div class="tile_row">
+                <div class="tile"></div>
+                <div class="tile etile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile"></div>
+                <div class="tile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile etile"></div>
+                <div class="tile"></div>
+            </div>
+        </div>
+        <div class="piece hidden" data-id="9" data-rows="3" data-cols="2" data-bitmap="011110" data-rotate-id="3" data-rotate-count="4" data-player="1">
+            <div class="tile_row">
+                <div class="tile etile"></div>
+                <div class="tile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile"></div>
+                <div class="tile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile"></div>
+                <div class="tile etile"></div>
+            </div>
+        </div>
+        <div class="piece hidden" data-id="9" data-rows="2" data-cols="3" data-bitmap="110011" data-rotate-id="4" data-rotate-count="4" data-player="1">
+            <div class="tile_row">
+                <div class="tile"></div>
+                <div class="tile"></div>
+                <div class="tile etile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile etile"></div>
+                <div class="tile"></div>
+                <div class="tile"></div>
+            </div>
+        </div>
+        <div class="piece" data-id="10" data-rows="3" data-cols="3" data-bitmap="010111010" data-player="1">
+            <div class="tile_row">
+                <div class="tile etile"></div>
+                <div class="tile"></div>
+                <div class="tile etile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile"></div>
+                <div class="tile"></div>
+                <div class="tile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile etile"></div>
+                <div class="tile"></div>
+                <div class="tile etile"></div>
+            </div>
+        </div>
+        <div class="piece" data-id="11" data-rows="1" data-cols="5" data-bitmap="11111" data-rotate-id="1" data-rotate-count="2" data-player="1">
+            <div class="tile_row">
+                <div class="tile"></div>
+                <div class="tile"></div>
+                <div class="tile"></div>
+                <div class="tile"></div>
+                <div class="tile"></div>
+            </div>
+        </div>
+        <div class="piece hidden" data-id="11" data-rows="5" data-cols="1" data-bitmap="11111" data-rotate-id="2" data-rotate-count="2" data-player="1">
+            <div class="tile_row">
+                <div class="tile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile"></div>
+            </div>
+        </div>
+        <div class="piece" data-id="12" data-rows="3" data-cols="3" data-bitmap="011010110" data-rotate-id="1" data-rotate-count="4" data-player="1">
+            <div class="tile_row">
+                <div class="tile etile"></div>
+                <div class="tile"></div>
+                <div class="tile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile etile"></div>
+                <div class="tile"></div>
+                <div class="tile etile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile"></div>
+                <div class="tile"></div>
+                <div class="tile etile"></div>
+            </div>
+        </div>
+        <div class="piece hidden" data-id="12" data-rows="3" data-cols="3" data-bitmap="100111001" data-rotate-id="2" data-rotate-count="4" data-player="1">
+            <div class="tile_row">
+                <div class="tile"></div>
+                <div class="tile etile"></div>
+                <div class="tile etile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile"></div>
+                <div class="tile"></div>
+                <div class="tile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile etile"></div>
+                <div class="tile etile"></div>
+                <div class="tile"></div>
+            </div>
+        </div>
+        <div class="piece hidden" data-id="12" data-rows="3" data-cols="3" data-bitmap="001111100" data-rotate-id="3" data-rotate-count="4" data-player="1">
+            <div class="tile_row">
+                <div class="tile etile"></div>
+                <div class="tile etile"></div>
+                <div class="tile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile"></div>
+                <div class="tile"></div>
+                <div class="tile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile"></div>
+                <div class="tile etile"></div>
+                <div class="tile etile"></div>
+            </div>
+        </div>
+        <div class="piece hidden" data-id="12" data-rows="3" data-cols="3" data-bitmap="110010011" data-rotate-id="4" data-rotate-count="4" data-player="1">
+            <div class="tile_row">
+                <div class="tile"></div>
+                <div class="tile"></div>
+                <div class="tile etile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile etile"></div>
+                <div class="tile"></div>
+                <div class="tile etile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile etile"></div>
+                <div class="tile"></div>
+                <div class="tile"></div>
+            </div>
+        </div>
+
+
+
+
+
+
+
+
+        <!--     *******************   -->
+        <!--      YELLOW PIECES END       -->
+        <!--     *******************   -->
+    </div>
+
+
+
+
+    <div id="player2_toolbar" class="toolbar">
+        <div>
+            <span id="player2_name">*********</span>
+            <div id="player2_score" class="score">0</div>
+        </div>
+
+
+        <!--     **************        -->
+        <!--      BLUE PIECES       -->
+        <!--     **************        -->
+
+
+
+
+
+
+
+        <div class="piece" data-id="1" data-rows="1" data-cols="1" data-bitmap="1" data-player="2">
+            <div class="tile_row">
+                <div class="tile"></div>
+            </div>
+        </div>
+        <div class="piece" data-id="2" data-rows="1" data-cols="2" data-bitmap="11" data-rotate-id="1" data-rotate-count="2" data-player="2">
+            <div class="tile_row">
+                <div class="tile"></div>
+                <div class="tile"></div>
+            </div>
+        </div>
+        <div class="piece hidden" data-id="2" data-rows="2" data-cols="1" data-bitmap="11" data-rotate-id="2" data-rotate-count="2" data-player="2">
+            <div class="tile_row">
+                <div class="tile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile"></div>
+            </div>
+        </div>
+        <div class="piece" data-id="3" data-rows="1" data-cols="3" data-bitmap="111" data-rotate-id="1" data-rotate-count="2" data-player="2">
+            <div class="tile_row">
+                <div class="tile"></div>
+                <div class="tile"></div>
+                <div class="tile"></div>
+            </div>
+        </div>
+        <div class="piece hidden" data-id="3" data-rows="3" data-cols="1" data-bitmap="111" data-rotate-id="2" data-rotate-count="2" data-player="2">
+            <div class="tile_row">
+                <div class="tile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile"></div>
+            </div>
+        </div>
+        <div class="piece" data-id="4" data-rows="1" data-cols="4" data-bitmap="1111" data-rotate-id="1" data-rotate-count="2" data-player="2">
+            <div class="tile_row">
+                <div class="tile"></div>
+                <div class="tile"></div>
+                <div class="tile"></div>
+                <div class="tile"></div>
+            </div>
+        </div>
+        <div class="piece hidden" data-id="4" data-rows="4" data-cols="1" data-bitmap="1111" data-rotate-id="2" data-rotate-count="2" data-player="2">
+            <div class="tile_row">
+                <div class="tile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile"></div>
+            </div>
+        </div>
+        <div class="piece" data-id="5" data-rows="2" data-cols="2" data-bitmap="0111" data-rotate-id="1" data-rotate-count="4" data-player="2">
+            <div class="tile_row">
+                <div class="tile etile"></div>
+                <div class="tile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile"></div>
+                <div class="tile"></div>
+            </div>
+        </div>
+        <div class="piece hidden" data-id="5" data-rows="2" data-cols="2" data-bitmap="1011" data-rotate-id="2" data-rotate-count="4" data-player="2">
+            <div class="tile_row">
+                <div class="tile"></div>
+                <div class="tile etile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile"></div>
+                <div class="tile"></div>
+            </div>
+        </div>
+        <div class="piece hidden" data-id="5" data-rows="2" data-cols="2" data-bitmap="1101" data-rotate-id="3" data-rotate-count="4" data-player="2">
+            <div class="tile_row">
+                <div class="tile"></div>
+                <div class="tile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile etile"></div>
+                <div class="tile"></div>
+            </div>
+        </div>
+        <div class="piece hidden" data-id="5" data-rows="2" data-cols="2" data-bitmap="1110" data-rotate-id="4" data-rotate-count="4" data-player="2">
+            <div class="tile_row">
+                <div class="tile"></div>
+                <div class="tile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile"></div>
+                <div class="tile etile"></div>
+            </div>
+        </div>
+        <div class="piece" data-id="6" data-rows="2" data-cols="2" data-bitmap="1111" data-player="2">
+            <div class="tile_row">
+                <div class="tile"></div>
+                <div class="tile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile"></div>
+                <div class="tile"></div>
+            </div>
+        </div>
+        <div class="piece" data-id="7" data-rows="2" data-cols="3" data-bitmap="010111" data-rotate-id="1" data-rotate-count="4" data-player="2">
+            <div class="tile_row">
+                <div class="tile etile"></div>
+                <div class="tile"></div>
+                <div class="tile etile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile"></div>
+                <div class="tile"></div>
+                <div class="tile"></div>
+            </div>
+        </div>
+        <div class="piece hidden" data-id="7" data-rows="3" data-cols="2" data-bitmap="101110" data-rotate-id="2" data-rotate-count="4" data-player="2">
+            <div class="tile_row">
+                <div class="tile"></div>
+                <div class="tile etile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile"></div>
+                <div class="tile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile"></div>
+                <div class="tile etile"></div>
+            </div>
+        </div>
+        <div class="piece hidden" data-id="7" data-rows="2" data-cols="3" data-bitmap="111010" data-rotate-id="3" data-rotate-count="4" data-player="2">
+            <div class="tile_row">
+                <div class="tile"></div>
+                <div class="tile"></div>
+                <div class="tile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile etile"></div>
+                <div class="tile"></div>
+                <div class="tile etile"></div>
+            </div>
+        </div>
+        <div class="piece hidden" data-id="7" data-rows="3" data-cols="2" data-bitmap="011101" data-rotate-id="4" data-rotate-count="4" data-player="2">
+            <div class="tile_row">
+                <div class="tile etile"></div>
+                <div class="tile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile"></div>
+                <div class="tile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile etile"></div>
+                <div class="tile"></div>
+            </div>
+        </div>
+        <div class="piece" data-id="8" data-rows="2" data-cols="3" data-bitmap="100111" data-rotate-id="1" data-rotate-count="8" data-player="2">
+            <div class="tile_row">
+                <div class="tile"></div>
+                <div class="tile etile"></div>
+                <div class="tile etile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile"></div>
+                <div class="tile"></div>
+                <div class="tile"></div>
+            </div>
+        </div>
+        <div class="piece hidden" data-id="8" data-rows="3" data-cols="2" data-bitmap="111010" data-rotate-id="2" data-rotate-count="8" data-player="2">
+            <div class="tile_row">
+                <div class="tile"></div>
+                <div class="tile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile"></div>
+                <div class="tile etile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile"></div>
+                <div class="tile etile"></div>
+            </div>
+        </div>
+        <div class="piece hidden" data-id="8" data-rows="2" data-cols="3" data-bitmap="111001" data-rotate-id="3" data-rotate-count="8" data-player="2">
+            <div class="tile_row">
+                <div class="tile"></div>
+                <div class="tile"></div>
+                <div class="tile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile etile"></div>
+                <div class="tile etile"></div>
+                <div class="tile"></div>
+            </div>
+        </div>
+        <div class="piece hidden" data-id="8" data-rows="3" data-cols="2" data-bitmap="010111" data-rotate-id="4" data-rotate-count="8" data-player="2">
+            <div class="tile_row">
+                <div class="tile etile"></div>
+                <div class="tile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile etile"></div>
+                <div class="tile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile"></div>
+                <div class="tile"></div>
+            </div>
+        </div>
+        <div class="piece hidden" data-id="8" data-rows="2" data-cols="3" data-bitmap="001111" data-rotate-id="5" data-rotate-count="8" data-player="2">
+            <div class="tile_row">
+                <div class="tile etile"></div>
+                <div class="tile etile"></div>
+                <div class="tile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile"></div>
+                <div class="tile"></div>
+                <div class="tile"></div>
+            </div>
+        </div>
+        <div class="piece hidden" data-id="8" data-rows="3" data-cols="2" data-bitmap="101011" data-rotate-id="6" data-rotate-count="8" data-player="2">
+            <div class="tile_row">
+                <div class="tile"></div>
+                <div class="tile etile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile"></div>
+                <div class="tile etile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile"></div>
+                <div class="tile"></div>
+            </div>
+        </div>
+        <div class="piece hidden" data-id="8" data-rows="2" data-cols="3" data-bitmap="111100" data-rotate-id="7" data-rotate-count="8" data-player="2">
+            <div class="tile_row">
+                <div class="tile"></div>
+                <div class="tile"></div>
+                <div class="tile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile"></div>
+                <div class="tile etile"></div>
+                <div class="tile etile"></div>
+            </div>
+        </div>
+        <div class="piece hidden" data-id="8" data-rows="3" data-cols="2" data-bitmap="110101" data-rotate-id="8" data-rotate-count="8" data-player="2">
+            <div class="tile_row">
+                <div class="tile"></div>
+                <div class="tile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile etile"></div>
+                <div class="tile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile etile"></div>
+                <div class="tile"></div>
+            </div>
+        </div>
+        <div class="piece" data-id="9" data-rows="2" data-cols="3" data-bitmap="011110" data-rotate-id="1" data-rotate-count="4" data-player="2">
+            <div class="tile_row">
+                <div class="tile etile"></div>
+                <div class="tile"></div>
+                <div class="tile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile"></div>
+                <div class="tile"></div>
+                <div class="tile etile"></div>
+            </div>
+        </div>
+        <div class="piece hidden" data-id="9" data-rows="3" data-cols="2" data-bitmap="101101" data-rotate-id="2" data-rotate-count="4" data-player="2">
+            <div class="tile_row">
+                <div class="tile"></div>
+                <div class="tile etile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile"></div>
+                <div class="tile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile etile"></div>
+                <div class="tile"></div>
+            </div>
+        </div>
+        <div class="piece hidden" data-id="9" data-rows="3" data-cols="2" data-bitmap="011110" data-rotate-id="3" data-rotate-count="4" data-player="2">
+            <div class="tile_row">
+                <div class="tile etile"></div>
+                <div class="tile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile"></div>
+                <div class="tile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile"></div>
+                <div class="tile etile"></div>
+            </div>
+        </div>
+        <div class="piece hidden" data-id="9" data-rows="2" data-cols="3" data-bitmap="110011" data-rotate-id="4" data-rotate-count="4" data-player="2">
+            <div class="tile_row">
+                <div class="tile"></div>
+                <div class="tile"></div>
+                <div class="tile etile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile etile"></div>
+                <div class="tile"></div>
+                <div class="tile"></div>
+            </div>
+        </div>
+        <div class="piece" data-id="10" data-rows="3" data-cols="3" data-bitmap="010111010" data-player="2">
+            <div class="tile_row">
+                <div class="tile etile"></div>
+                <div class="tile"></div>
+                <div class="tile etile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile"></div>
+                <div class="tile"></div>
+                <div class="tile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile etile"></div>
+                <div class="tile"></div>
+                <div class="tile etile"></div>
+            </div>
+        </div>
+        <div class="piece" data-id="11" data-rows="1" data-cols="5" data-bitmap="11111" data-rotate-id="1" data-rotate-count="2" data-player="2">
+            <div class="tile_row">
+                <div class="tile"></div>
+                <div class="tile"></div>
+                <div class="tile"></div>
+                <div class="tile"></div>
+                <div class="tile"></div>
+            </div>
+        </div>
+        <div class="piece hidden" data-id="11" data-rows="5" data-cols="1" data-bitmap="11111" data-rotate-id="2" data-rotate-count="2" data-player="2">
+            <div class="tile_row">
+                <div class="tile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile"></div>
+            </div>
+        </div>
+        <div class="piece" data-id="12" data-rows="3" data-cols="3" data-bitmap="011010110" data-rotate-id="1" data-rotate-count="4" data-player="2">
+            <div class="tile_row">
+                <div class="tile etile"></div>
+                <div class="tile"></div>
+                <div class="tile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile etile"></div>
+                <div class="tile"></div>
+                <div class="tile etile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile"></div>
+                <div class="tile"></div>
+                <div class="tile etile"></div>
+            </div>
+        </div>
+        <div class="piece hidden" data-id="12" data-rows="3" data-cols="3" data-bitmap="100111001" data-rotate-id="2" data-rotate-count="4" data-player="2">
+            <div class="tile_row">
+                <div class="tile"></div>
+                <div class="tile etile"></div>
+                <div class="tile etile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile"></div>
+                <div class="tile"></div>
+                <div class="tile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile etile"></div>
+                <div class="tile etile"></div>
+                <div class="tile"></div>
+            </div>
+        </div>
+        <div class="piece hidden" data-id="12" data-rows="3" data-cols="3" data-bitmap="001111100" data-rotate-id="3" data-rotate-count="4" data-player="2">
+            <div class="tile_row">
+                <div class="tile etile"></div>
+                <div class="tile etile"></div>
+                <div class="tile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile"></div>
+                <div class="tile"></div>
+                <div class="tile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile"></div>
+                <div class="tile etile"></div>
+                <div class="tile etile"></div>
+            </div>
+        </div>
+        <div class="piece hidden" data-id="12" data-rows="3" data-cols="3" data-bitmap="110010011" data-rotate-id="4" data-rotate-count="4" data-player="2">
+            <div class="tile_row">
+                <div class="tile"></div>
+                <div class="tile"></div>
+                <div class="tile etile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile etile"></div>
+                <div class="tile"></div>
+                <div class="tile etile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile etile"></div>
+                <div class="tile"></div>
+                <div class="tile"></div>
+            </div>
+        </div>
+
+
+
+
+
+
+
+
+
+        <!--     *******************   -->
+        <!--      BLUE PIECES END       -->
+        <!--     *******************   -->
+    </div>
+
+
+
+    <!-- Note: Order is swapped, because that's how floats work -->
+    <div id="player4_toolbar" class="toolbar">
+        <div>
+            <span id="player4_name">*********</span>
+            <div id="player4_score" class="score">0</div>
+        </div>
+
+        <!--     **************        -->
+        <!--      GREEN PIECES       -->
+        <!--     **************        -->
+
+
+
+
+
+
+
+        <div class="piece" data-id="1" data-rows="1" data-cols="1" data-bitmap="1" data-player="4">
+            <div class="tile_row">
+                <div class="tile"></div>
+            </div>
+        </div>
+        <div class="piece" data-id="2" data-rows="1" data-cols="2" data-bitmap="11" data-rotate-id="1" data-rotate-count="2" data-player="4">
+            <div class="tile_row">
+                <div class="tile"></div>
+                <div class="tile"></div>
+            </div>
+        </div>
+        <div class="piece hidden" data-id="2" data-rows="2" data-cols="1" data-bitmap="11" data-rotate-id="2" data-rotate-count="2" data-player="4">
+            <div class="tile_row">
+                <div class="tile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile"></div>
+            </div>
+        </div>
+        <div class="piece" data-id="3" data-rows="1" data-cols="3" data-bitmap="111" data-rotate-id="1" data-rotate-count="2" data-player="4">
+            <div class="tile_row">
+                <div class="tile"></div>
+                <div class="tile"></div>
+                <div class="tile"></div>
+            </div>
+        </div>
+        <div class="piece hidden" data-id="3" data-rows="3" data-cols="1" data-bitmap="111" data-rotate-id="2" data-rotate-count="2" data-player="4">
+            <div class="tile_row">
+                <div class="tile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile"></div>
+            </div>
+        </div>
+        <div class="piece" data-id="4" data-rows="1" data-cols="4" data-bitmap="1111" data-rotate-id="1" data-rotate-count="2" data-player="4">
+            <div class="tile_row">
+                <div class="tile"></div>
+                <div class="tile"></div>
+                <div class="tile"></div>
+                <div class="tile"></div>
+            </div>
+        </div>
+        <div class="piece hidden" data-id="4" data-rows="4" data-cols="1" data-bitmap="1111" data-rotate-id="2" data-rotate-count="2" data-player="4">
+            <div class="tile_row">
+                <div class="tile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile"></div>
+            </div>
+        </div>
+        <div class="piece" data-id="5" data-rows="2" data-cols="2" data-bitmap="0111" data-rotate-id="1" data-rotate-count="4" data-player="4">
+            <div class="tile_row">
+                <div class="tile etile"></div>
+                <div class="tile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile"></div>
+                <div class="tile"></div>
+            </div>
+        </div>
+        <div class="piece hidden" data-id="5" data-rows="2" data-cols="2" data-bitmap="1011" data-rotate-id="2" data-rotate-count="4" data-player="4">
+            <div class="tile_row">
+                <div class="tile"></div>
+                <div class="tile etile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile"></div>
+                <div class="tile"></div>
+            </div>
+        </div>
+        <div class="piece hidden" data-id="5" data-rows="2" data-cols="2" data-bitmap="1101" data-rotate-id="3" data-rotate-count="4" data-player="4">
+            <div class="tile_row">
+                <div class="tile"></div>
+                <div class="tile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile etile"></div>
+                <div class="tile"></div>
+            </div>
+        </div>
+        <div class="piece hidden" data-id="5" data-rows="2" data-cols="2" data-bitmap="1110" data-rotate-id="4" data-rotate-count="4" data-player="4">
+            <div class="tile_row">
+                <div class="tile"></div>
+                <div class="tile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile"></div>
+                <div class="tile etile"></div>
+            </div>
+        </div>
+        <div class="piece" data-id="6" data-rows="2" data-cols="2" data-bitmap="1111" data-player="4">
+            <div class="tile_row">
+                <div class="tile"></div>
+                <div class="tile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile"></div>
+                <div class="tile"></div>
+            </div>
+        </div>
+        <div class="piece" data-id="7" data-rows="2" data-cols="3" data-bitmap="010111" data-rotate-id="1" data-rotate-count="4" data-player="4">
+            <div class="tile_row">
+                <div class="tile etile"></div>
+                <div class="tile"></div>
+                <div class="tile etile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile"></div>
+                <div class="tile"></div>
+                <div class="tile"></div>
+            </div>
+        </div>
+        <div class="piece hidden" data-id="7" data-rows="3" data-cols="2" data-bitmap="101110" data-rotate-id="2" data-rotate-count="4" data-player="4">
+            <div class="tile_row">
+                <div class="tile"></div>
+                <div class="tile etile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile"></div>
+                <div class="tile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile"></div>
+                <div class="tile etile"></div>
+            </div>
+        </div>
+        <div class="piece hidden" data-id="7" data-rows="2" data-cols="3" data-bitmap="111010" data-rotate-id="3" data-rotate-count="4" data-player="4">
+            <div class="tile_row">
+                <div class="tile"></div>
+                <div class="tile"></div>
+                <div class="tile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile etile"></div>
+                <div class="tile"></div>
+                <div class="tile etile"></div>
+            </div>
+        </div>
+        <div class="piece hidden" data-id="7" data-rows="3" data-cols="2" data-bitmap="011101" data-rotate-id="4" data-rotate-count="4" data-player="4">
+            <div class="tile_row">
+                <div class="tile etile"></div>
+                <div class="tile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile"></div>
+                <div class="tile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile etile"></div>
+                <div class="tile"></div>
+            </div>
+        </div>
+        <div class="piece" data-id="8" data-rows="2" data-cols="3" data-bitmap="100111" data-rotate-id="1" data-rotate-count="8" data-player="4">
+            <div class="tile_row">
+                <div class="tile"></div>
+                <div class="tile etile"></div>
+                <div class="tile etile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile"></div>
+                <div class="tile"></div>
+                <div class="tile"></div>
+            </div>
+        </div>
+        <div class="piece hidden" data-id="8" data-rows="3" data-cols="2" data-bitmap="111010" data-rotate-id="2" data-rotate-count="8" data-player="4">
+            <div class="tile_row">
+                <div class="tile"></div>
+                <div class="tile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile"></div>
+                <div class="tile etile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile"></div>
+                <div class="tile etile"></div>
+            </div>
+        </div>
+        <div class="piece hidden" data-id="8" data-rows="2" data-cols="3" data-bitmap="111001" data-rotate-id="3" data-rotate-count="8" data-player="4">
+            <div class="tile_row">
+                <div class="tile"></div>
+                <div class="tile"></div>
+                <div class="tile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile etile"></div>
+                <div class="tile etile"></div>
+                <div class="tile"></div>
+            </div>
+        </div>
+        <div class="piece hidden" data-id="8" data-rows="3" data-cols="2" data-bitmap="010111" data-rotate-id="4" data-rotate-count="8" data-player="4">
+            <div class="tile_row">
+                <div class="tile etile"></div>
+                <div class="tile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile etile"></div>
+                <div class="tile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile"></div>
+                <div class="tile"></div>
+            </div>
+        </div>
+        <div class="piece hidden" data-id="8" data-rows="2" data-cols="3" data-bitmap="001111" data-rotate-id="5" data-rotate-count="8" data-player="4">
+            <div class="tile_row">
+                <div class="tile etile"></div>
+                <div class="tile etile"></div>
+                <div class="tile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile"></div>
+                <div class="tile"></div>
+                <div class="tile"></div>
+            </div>
+        </div>
+        <div class="piece hidden" data-id="8" data-rows="3" data-cols="2" data-bitmap="101011" data-rotate-id="6" data-rotate-count="8" data-player="4">
+            <div class="tile_row">
+                <div class="tile"></div>
+                <div class="tile etile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile"></div>
+                <div class="tile etile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile"></div>
+                <div class="tile"></div>
+            </div>
+        </div>
+        <div class="piece hidden" data-id="8" data-rows="2" data-cols="3" data-bitmap="111100" data-rotate-id="7" data-rotate-count="8" data-player="4">
+            <div class="tile_row">
+                <div class="tile"></div>
+                <div class="tile"></div>
+                <div class="tile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile"></div>
+                <div class="tile etile"></div>
+                <div class="tile etile"></div>
+            </div>
+        </div>
+        <div class="piece hidden" data-id="8" data-rows="3" data-cols="2" data-bitmap="110101" data-rotate-id="8" data-rotate-count="8" data-player="4">
+            <div class="tile_row">
+                <div class="tile"></div>
+                <div class="tile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile etile"></div>
+                <div class="tile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile etile"></div>
+                <div class="tile"></div>
+            </div>
+        </div>
+        <div class="piece" data-id="9" data-rows="2" data-cols="3" data-bitmap="011110" data-rotate-id="1" data-rotate-count="4" data-player="4">
+            <div class="tile_row">
+                <div class="tile etile"></div>
+                <div class="tile"></div>
+                <div class="tile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile"></div>
+                <div class="tile"></div>
+                <div class="tile etile"></div>
+            </div>
+        </div>
+        <div class="piece hidden" data-id="9" data-rows="3" data-cols="2" data-bitmap="101101" data-rotate-id="2" data-rotate-count="4" data-player="4">
+            <div class="tile_row">
+                <div class="tile"></div>
+                <div class="tile etile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile"></div>
+                <div class="tile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile etile"></div>
+                <div class="tile"></div>
+            </div>
+        </div>
+        <div class="piece hidden" data-id="9" data-rows="3" data-cols="2" data-bitmap="011110" data-rotate-id="3" data-rotate-count="4" data-player="4">
+            <div class="tile_row">
+                <div class="tile etile"></div>
+                <div class="tile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile"></div>
+                <div class="tile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile"></div>
+                <div class="tile etile"></div>
+            </div>
+        </div>
+        <div class="piece hidden" data-id="9" data-rows="2" data-cols="3" data-bitmap="110011" data-rotate-id="4" data-rotate-count="4" data-player="4">
+            <div class="tile_row">
+                <div class="tile"></div>
+                <div class="tile"></div>
+                <div class="tile etile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile etile"></div>
+                <div class="tile"></div>
+                <div class="tile"></div>
+            </div>
+        </div>
+        <div class="piece" data-id="10" data-rows="3" data-cols="3" data-bitmap="010111010" data-player="4">
+            <div class="tile_row">
+                <div class="tile etile"></div>
+                <div class="tile"></div>
+                <div class="tile etile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile"></div>
+                <div class="tile"></div>
+                <div class="tile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile etile"></div>
+                <div class="tile"></div>
+                <div class="tile etile"></div>
+            </div>
+        </div>
+        <div class="piece" data-id="11" data-rows="1" data-cols="5" data-bitmap="11111" data-rotate-id="1" data-rotate-count="2" data-player="4">
+            <div class="tile_row">
+                <div class="tile"></div>
+                <div class="tile"></div>
+                <div class="tile"></div>
+                <div class="tile"></div>
+                <div class="tile"></div>
+            </div>
+        </div>
+        <div class="piece hidden" data-id="11" data-rows="5" data-cols="1" data-bitmap="11111" data-rotate-id="2" data-rotate-count="2" data-player="4">
+            <div class="tile_row">
+                <div class="tile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile"></div>
+            </div>
+        </div>
+        <div class="piece" data-id="12" data-rows="3" data-cols="3" data-bitmap="011010110" data-rotate-id="1" data-rotate-count="4" data-player="4">
+            <div class="tile_row">
+                <div class="tile etile"></div>
+                <div class="tile"></div>
+                <div class="tile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile etile"></div>
+                <div class="tile"></div>
+                <div class="tile etile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile"></div>
+                <div class="tile"></div>
+                <div class="tile etile"></div>
+            </div>
+        </div>
+        <div class="piece hidden" data-id="12" data-rows="3" data-cols="3" data-bitmap="100111001" data-rotate-id="2" data-rotate-count="4" data-player="4">
+            <div class="tile_row">
+                <div class="tile"></div>
+                <div class="tile etile"></div>
+                <div class="tile etile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile"></div>
+                <div class="tile"></div>
+                <div class="tile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile etile"></div>
+                <div class="tile etile"></div>
+                <div class="tile"></div>
+            </div>
+        </div>
+        <div class="piece hidden" data-id="12" data-rows="3" data-cols="3" data-bitmap="001111100" data-rotate-id="3" data-rotate-count="4" data-player="4">
+            <div class="tile_row">
+                <div class="tile etile"></div>
+                <div class="tile etile"></div>
+                <div class="tile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile"></div>
+                <div class="tile"></div>
+                <div class="tile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile"></div>
+                <div class="tile etile"></div>
+                <div class="tile etile"></div>
+            </div>
+        </div>
+        <div class="piece hidden" data-id="12" data-rows="3" data-cols="3" data-bitmap="110010011" data-rotate-id="4" data-rotate-count="4" data-player="4">
+            <div class="tile_row">
+                <div class="tile"></div>
+                <div class="tile"></div>
+                <div class="tile etile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile etile"></div>
+                <div class="tile"></div>
+                <div class="tile etile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile etile"></div>
+                <div class="tile"></div>
+                <div class="tile"></div>
+            </div>
+        </div>
+
+
+
+
+
+
+
+
+        <!--     *******************   -->
+        <!--      GREEN PIECES END       -->
+        <!--     *******************   -->
+    </div>
+
+
+
+
+
+    <div id="player3_toolbar" class="toolbar">
+        <div>
+            <span id="player3_name">*********</span>
+            <div id="player3_score" class="score">0</div>
+        </div>
+
+        <!--     **************        -->
+        <!--      RED PIECES       -->
+        <!--     **************        -->
+
+
+
+
+
+
+        <div class="piece" data-id="1" data-rows="1" data-cols="1" data-bitmap="1" data-player="3">
+            <div class="tile_row">
+                <div class="tile"></div>
+            </div>
+        </div>
+        <div class="piece" data-id="2" data-rows="1" data-cols="2" data-bitmap="11" data-rotate-id="1" data-rotate-count="2" data-player="3">
+            <div class="tile_row">
+                <div class="tile"></div>
+                <div class="tile"></div>
+            </div>
+        </div>
+        <div class="piece hidden" data-id="2" data-rows="2" data-cols="1" data-bitmap="11" data-rotate-id="2" data-rotate-count="2" data-player="3">
+            <div class="tile_row">
+                <div class="tile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile"></div>
+            </div>
+        </div>
+        <div class="piece" data-id="3" data-rows="1" data-cols="3" data-bitmap="111" data-rotate-id="1" data-rotate-count="2" data-player="3">
+            <div class="tile_row">
+                <div class="tile"></div>
+                <div class="tile"></div>
+                <div class="tile"></div>
+            </div>
+        </div>
+        <div class="piece hidden" data-id="3" data-rows="3" data-cols="1" data-bitmap="111" data-rotate-id="2" data-rotate-count="2" data-player="3">
+            <div class="tile_row">
+                <div class="tile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile"></div>
+            </div>
+        </div>
+        <div class="piece" data-id="4" data-rows="1" data-cols="4" data-bitmap="1111" data-rotate-id="1" data-rotate-count="2" data-player="3">
+            <div class="tile_row">
+                <div class="tile"></div>
+                <div class="tile"></div>
+                <div class="tile"></div>
+                <div class="tile"></div>
+            </div>
+        </div>
+        <div class="piece hidden" data-id="4" data-rows="4" data-cols="1" data-bitmap="1111" data-rotate-id="2" data-rotate-count="2" data-player="3">
+            <div class="tile_row">
+                <div class="tile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile"></div>
+            </div>
+        </div>
+        <div class="piece" data-id="5" data-rows="2" data-cols="2" data-bitmap="0111" data-rotate-id="1" data-rotate-count="4" data-player="3">
+            <div class="tile_row">
+                <div class="tile etile"></div>
+                <div class="tile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile"></div>
+                <div class="tile"></div>
+            </div>
+        </div>
+        <div class="piece hidden" data-id="5" data-rows="2" data-cols="2" data-bitmap="1011" data-rotate-id="2" data-rotate-count="4" data-player="3">
+            <div class="tile_row">
+                <div class="tile"></div>
+                <div class="tile etile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile"></div>
+                <div class="tile"></div>
+            </div>
+        </div>
+        <div class="piece hidden" data-id="5" data-rows="2" data-cols="2" data-bitmap="1101" data-rotate-id="3" data-rotate-count="4" data-player="3">
+            <div class="tile_row">
+                <div class="tile"></div>
+                <div class="tile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile etile"></div>
+                <div class="tile"></div>
+            </div>
+        </div>
+        <div class="piece hidden" data-id="5" data-rows="2" data-cols="2" data-bitmap="1110" data-rotate-id="4" data-rotate-count="4" data-player="3">
+            <div class="tile_row">
+                <div class="tile"></div>
+                <div class="tile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile"></div>
+                <div class="tile etile"></div>
+            </div>
+        </div>
+        <div class="piece" data-id="6" data-rows="2" data-cols="2" data-bitmap="1111" data-player="3">
+            <div class="tile_row">
+                <div class="tile"></div>
+                <div class="tile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile"></div>
+                <div class="tile"></div>
+            </div>
+        </div>
+        <div class="piece" data-id="7" data-rows="2" data-cols="3" data-bitmap="010111" data-rotate-id="1" data-rotate-count="4" data-player="3">
+            <div class="tile_row">
+                <div class="tile etile"></div>
+                <div class="tile"></div>
+                <div class="tile etile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile"></div>
+                <div class="tile"></div>
+                <div class="tile"></div>
+            </div>
+        </div>
+        <div class="piece hidden" data-id="7" data-rows="3" data-cols="2" data-bitmap="101110" data-rotate-id="2" data-rotate-count="4" data-player="3">
+            <div class="tile_row">
+                <div class="tile"></div>
+                <div class="tile etile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile"></div>
+                <div class="tile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile"></div>
+                <div class="tile etile"></div>
+            </div>
+        </div>
+        <div class="piece hidden" data-id="7" data-rows="2" data-cols="3" data-bitmap="111010" data-rotate-id="3" data-rotate-count="4" data-player="3">
+            <div class="tile_row">
+                <div class="tile"></div>
+                <div class="tile"></div>
+                <div class="tile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile etile"></div>
+                <div class="tile"></div>
+                <div class="tile etile"></div>
+            </div>
+        </div>
+        <div class="piece hidden" data-id="7" data-rows="3" data-cols="2" data-bitmap="011101" data-rotate-id="4" data-rotate-count="4" data-player="3">
+            <div class="tile_row">
+                <div class="tile etile"></div>
+                <div class="tile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile"></div>
+                <div class="tile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile etile"></div>
+                <div class="tile"></div>
+            </div>
+        </div>
+        <div class="piece" data-id="8" data-rows="2" data-cols="3" data-bitmap="100111" data-rotate-id="1" data-rotate-count="8" data-player="3">
+            <div class="tile_row">
+                <div class="tile"></div>
+                <div class="tile etile"></div>
+                <div class="tile etile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile"></div>
+                <div class="tile"></div>
+                <div class="tile"></div>
+            </div>
+        </div>
+        <div class="piece hidden" data-id="8" data-rows="3" data-cols="2" data-bitmap="111010" data-rotate-id="2" data-rotate-count="8" data-player="3">
+            <div class="tile_row">
+                <div class="tile"></div>
+                <div class="tile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile"></div>
+                <div class="tile etile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile"></div>
+                <div class="tile etile"></div>
+            </div>
+        </div>
+        <div class="piece hidden" data-id="8" data-rows="2" data-cols="3" data-bitmap="111001" data-rotate-id="3" data-rotate-count="8" data-player="3">
+            <div class="tile_row">
+                <div class="tile"></div>
+                <div class="tile"></div>
+                <div class="tile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile etile"></div>
+                <div class="tile etile"></div>
+                <div class="tile"></div>
+            </div>
+        </div>
+        <div class="piece hidden" data-id="8" data-rows="3" data-cols="2" data-bitmap="010111" data-rotate-id="4" data-rotate-count="8" data-player="3">
+            <div class="tile_row">
+                <div class="tile etile"></div>
+                <div class="tile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile etile"></div>
+                <div class="tile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile"></div>
+                <div class="tile"></div>
+            </div>
+        </div>
+        <div class="piece hidden" data-id="8" data-rows="2" data-cols="3" data-bitmap="001111" data-rotate-id="5" data-rotate-count="8" data-player="3">
+            <div class="tile_row">
+                <div class="tile etile"></div>
+                <div class="tile etile"></div>
+                <div class="tile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile"></div>
+                <div class="tile"></div>
+                <div class="tile"></div>
+            </div>
+        </div>
+        <div class="piece hidden" data-id="8" data-rows="3" data-cols="2" data-bitmap="101011" data-rotate-id="6" data-rotate-count="8" data-player="3">
+            <div class="tile_row">
+                <div class="tile"></div>
+                <div class="tile etile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile"></div>
+                <div class="tile etile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile"></div>
+                <div class="tile"></div>
+            </div>
+        </div>
+        <div class="piece hidden" data-id="8" data-rows="2" data-cols="3" data-bitmap="111100" data-rotate-id="7" data-rotate-count="8" data-player="3">
+            <div class="tile_row">
+                <div class="tile"></div>
+                <div class="tile"></div>
+                <div class="tile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile"></div>
+                <div class="tile etile"></div>
+                <div class="tile etile"></div>
+            </div>
+        </div>
+        <div class="piece hidden" data-id="8" data-rows="3" data-cols="2" data-bitmap="110101" data-rotate-id="8" data-rotate-count="8" data-player="3">
+            <div class="tile_row">
+                <div class="tile"></div>
+                <div class="tile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile etile"></div>
+                <div class="tile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile etile"></div>
+                <div class="tile"></div>
+            </div>
+        </div>
+        <div class="piece" data-id="9" data-rows="2" data-cols="3" data-bitmap="011110" data-rotate-id="1" data-rotate-count="4" data-player="3">
+            <div class="tile_row">
+                <div class="tile etile"></div>
+                <div class="tile"></div>
+                <div class="tile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile"></div>
+                <div class="tile"></div>
+                <div class="tile etile"></div>
+            </div>
+        </div>
+        <div class="piece hidden" data-id="9" data-rows="3" data-cols="2" data-bitmap="101101" data-rotate-id="2" data-rotate-count="4" data-player="3">
+            <div class="tile_row">
+                <div class="tile"></div>
+                <div class="tile etile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile"></div>
+                <div class="tile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile etile"></div>
+                <div class="tile"></div>
+            </div>
+        </div>
+        <div class="piece hidden" data-id="9" data-rows="3" data-cols="2" data-bitmap="011110" data-rotate-id="3" data-rotate-count="4" data-player="3">
+            <div class="tile_row">
+                <div class="tile etile"></div>
+                <div class="tile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile"></div>
+                <div class="tile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile"></div>
+                <div class="tile etile"></div>
+            </div>
+        </div>
+        <div class="piece hidden" data-id="9" data-rows="2" data-cols="3" data-bitmap="110011" data-rotate-id="4" data-rotate-count="4" data-player="3">
+            <div class="tile_row">
+                <div class="tile"></div>
+                <div class="tile"></div>
+                <div class="tile etile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile etile"></div>
+                <div class="tile"></div>
+                <div class="tile"></div>
+            </div>
+        </div>
+        <div class="piece" data-id="10" data-rows="3" data-cols="3" data-bitmap="010111010" data-player="3">
+            <div class="tile_row">
+                <div class="tile etile"></div>
+                <div class="tile"></div>
+                <div class="tile etile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile"></div>
+                <div class="tile"></div>
+                <div class="tile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile etile"></div>
+                <div class="tile"></div>
+                <div class="tile etile"></div>
+            </div>
+        </div>
+        <div class="piece" data-id="11" data-rows="1" data-cols="5" data-bitmap="11111" data-rotate-id="1" data-rotate-count="2" data-player="3">
+            <div class="tile_row">
+                <div class="tile"></div>
+                <div class="tile"></div>
+                <div class="tile"></div>
+                <div class="tile"></div>
+                <div class="tile"></div>
+            </div>
+        </div>
+        <div class="piece hidden" data-id="11" data-rows="5" data-cols="1" data-bitmap="11111" data-rotate-id="2" data-rotate-count="2" data-player="3">
+            <div class="tile_row">
+                <div class="tile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile"></div>
+            </div>
+        </div>
+        <div class="piece" data-id="12" data-rows="3" data-cols="3" data-bitmap="011010110" data-rotate-id="1" data-rotate-count="4" data-player="3">
+            <div class="tile_row">
+                <div class="tile etile"></div>
+                <div class="tile"></div>
+                <div class="tile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile etile"></div>
+                <div class="tile"></div>
+                <div class="tile etile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile"></div>
+                <div class="tile"></div>
+                <div class="tile etile"></div>
+            </div>
+        </div>
+        <div class="piece hidden" data-id="12" data-rows="3" data-cols="3" data-bitmap="100111001" data-rotate-id="2" data-rotate-count="4" data-player="3">
+            <div class="tile_row">
+                <div class="tile"></div>
+                <div class="tile etile"></div>
+                <div class="tile etile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile"></div>
+                <div class="tile"></div>
+                <div class="tile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile etile"></div>
+                <div class="tile etile"></div>
+                <div class="tile"></div>
+            </div>
+        </div>
+        <div class="piece hidden" data-id="12" data-rows="3" data-cols="3" data-bitmap="001111100" data-rotate-id="3" data-rotate-count="4" data-player="3">
+            <div class="tile_row">
+                <div class="tile etile"></div>
+                <div class="tile etile"></div>
+                <div class="tile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile"></div>
+                <div class="tile"></div>
+                <div class="tile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile"></div>
+                <div class="tile etile"></div>
+                <div class="tile etile"></div>
+            </div>
+        </div>
+        <div class="piece hidden" data-id="12" data-rows="3" data-cols="3" data-bitmap="110010011" data-rotate-id="4" data-rotate-count="4" data-player="3">
+            <div class="tile_row">
+                <div class="tile"></div>
+                <div class="tile"></div>
+                <div class="tile etile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile etile"></div>
+                <div class="tile"></div>
+                <div class="tile etile"></div>
+            </div>
+            <div class="tile_row">
+                <div class="tile etile"></div>
+                <div class="tile"></div>
+                <div class="tile"></div>
+            </div>
+        </div>
+
+
+
+
+
+
+        <!--     *******************   -->
+        <!--      RED PIECES END       -->
+        <!--     *******************   -->
+    </div>
+
+
+
+
+
+    <div id="header_container">
+        <div>
+            Turn: <span id="player_turn">*********</span>
+        </div>
+        <div>
+            <button class="button" id="finish_turn_btn">Finish Turn</button>
+        </div>
+    </div>
+    <!-- Note: Non-floated divs come after floated divs, in order for it to fill up the center space -->
+    <!-- See http://stackoverflow.com/a/2603709 -->
+    <div id="gameboard_container">
+
+        <!--     **************        -->
+        <!--      Gameboard            -->
+        <!--     **************        -->
+
+        <!-- Use Emmett to easily set the row and column for javascript to easily get access to -->
+        <!-- #gameboard>.gameboard-row[data-row=$@0]*12>.gameboard-cell[data-column=$@0]*12 -->
+        <div id="gameboard">
+            <div class="gameboard-row" data-row="0">
+                <div class="gameboard-cell" data-column="0"></div>
+                <div class="gameboard-cell" data-column="1"></div>
+                <div class="gameboard-cell" data-column="2"></div>
+                <div class="gameboard-cell" data-column="3"></div>
+                <div class="gameboard-cell" data-column="4"></div>
+                <div class="gameboard-cell" data-column="5"></div>
+                <div class="gameboard-cell" data-column="6"></div>
+                <div class="gameboard-cell" data-column="7"></div>
+                <div class="gameboard-cell" data-column="8"></div>
+                <div class="gameboard-cell" data-column="9"></div>
+                <div class="gameboard-cell" data-column="10"></div>
+                <div class="gameboard-cell" data-column="11"></div>
+            </div>
+            <div class="gameboard-row" data-row="1">
+                <div class="gameboard-cell" data-column="0"></div>
+                <div class="gameboard-cell" data-column="1"></div>
+                <div class="gameboard-cell" data-column="2"></div>
+                <div class="gameboard-cell" data-column="3"></div>
+                <div class="gameboard-cell" data-column="4"></div>
+                <div class="gameboard-cell" data-column="5"></div>
+                <div class="gameboard-cell" data-column="6"></div>
+                <div class="gameboard-cell" data-column="7"></div>
+                <div class="gameboard-cell" data-column="8"></div>
+                <div class="gameboard-cell" data-column="9"></div>
+                <div class="gameboard-cell" data-column="10"></div>
+                <div class="gameboard-cell" data-column="11"></div>
+            </div>
+            <div class="gameboard-row" data-row="2">
+                <div class="gameboard-cell" data-column="0"></div>
+                <div class="gameboard-cell" data-column="1"></div>
+                <div class="gameboard-cell" data-column="2"></div>
+                <div class="gameboard-cell" data-column="3"></div>
+                <div class="gameboard-cell" data-column="4"></div>
+                <div class="gameboard-cell" data-column="5"></div>
+                <div class="gameboard-cell" data-column="6"></div>
+                <div class="gameboard-cell" data-column="7"></div>
+                <div class="gameboard-cell" data-column="8"></div>
+                <div class="gameboard-cell" data-column="9"></div>
+                <div class="gameboard-cell" data-column="10"></div>
+                <div class="gameboard-cell" data-column="11"></div>
+            </div>
+            <div class="gameboard-row" data-row="3">
+                <div class="gameboard-cell" data-column="0"></div>
+                <div class="gameboard-cell" data-column="1"></div>
+                <div class="gameboard-cell" data-column="2"></div>
+                <div class="gameboard-cell" data-column="3"></div>
+                <div class="gameboard-cell" data-column="4"></div>
+                <div class="gameboard-cell" data-column="5"></div>
+                <div class="gameboard-cell" data-column="6"></div>
+                <div class="gameboard-cell" data-column="7"></div>
+                <div class="gameboard-cell" data-column="8"></div>
+                <div class="gameboard-cell" data-column="9"></div>
+                <div class="gameboard-cell" data-column="10"></div>
+                <div class="gameboard-cell" data-column="11"></div>
+            </div>
+            <div class="gameboard-row" data-row="4">
+                <div class="gameboard-cell" data-column="0"></div>
+                <div class="gameboard-cell" data-column="1"></div>
+                <div class="gameboard-cell" data-column="2"></div>
+                <div class="gameboard-cell" data-column="3"></div>
+                <div class="gameboard-cell" data-column="4"></div>
+                <div class="gameboard-cell" data-column="5"></div>
+                <div class="gameboard-cell" data-column="6"></div>
+                <div class="gameboard-cell" data-column="7"></div>
+                <div class="gameboard-cell" data-column="8"></div>
+                <div class="gameboard-cell" data-column="9"></div>
+                <div class="gameboard-cell" data-column="10"></div>
+                <div class="gameboard-cell" data-column="11"></div>
+            </div>
+            <div class="gameboard-row" data-row="5">
+                <div class="gameboard-cell" data-column="0"></div>
+                <div class="gameboard-cell" data-column="1"></div>
+                <div class="gameboard-cell" data-column="2"></div>
+                <div class="gameboard-cell" data-column="3"></div>
+                <div class="gameboard-cell" data-column="4"></div>
+                <div class="gameboard-cell" data-column="5"></div>
+                <div class="gameboard-cell" data-column="6"></div>
+                <div class="gameboard-cell" data-column="7"></div>
+                <div class="gameboard-cell" data-column="8"></div>
+                <div class="gameboard-cell" data-column="9"></div>
+                <div class="gameboard-cell" data-column="10"></div>
+                <div class="gameboard-cell" data-column="11"></div>
+            </div>
+            <div class="gameboard-row" data-row="6">
+                <div class="gameboard-cell" data-column="0"></div>
+                <div class="gameboard-cell" data-column="1"></div>
+                <div class="gameboard-cell" data-column="2"></div>
+                <div class="gameboard-cell" data-column="3"></div>
+                <div class="gameboard-cell" data-column="4"></div>
+                <div class="gameboard-cell" data-column="5"></div>
+                <div class="gameboard-cell" data-column="6"></div>
+                <div class="gameboard-cell" data-column="7"></div>
+                <div class="gameboard-cell" data-column="8"></div>
+                <div class="gameboard-cell" data-column="9"></div>
+                <div class="gameboard-cell" data-column="10"></div>
+                <div class="gameboard-cell" data-column="11"></div>
+            </div>
+            <div class="gameboard-row" data-row="7">
+                <div class="gameboard-cell" data-column="0"></div>
+                <div class="gameboard-cell" data-column="1"></div>
+                <div class="gameboard-cell" data-column="2"></div>
+                <div class="gameboard-cell" data-column="3"></div>
+                <div class="gameboard-cell" data-column="4"></div>
+                <div class="gameboard-cell" data-column="5"></div>
+                <div class="gameboard-cell" data-column="6"></div>
+                <div class="gameboard-cell" data-column="7"></div>
+                <div class="gameboard-cell" data-column="8"></div>
+                <div class="gameboard-cell" data-column="9"></div>
+                <div class="gameboard-cell" data-column="10"></div>
+                <div class="gameboard-cell" data-column="11"></div>
+            </div>
+            <div class="gameboard-row" data-row="8">
+                <div class="gameboard-cell" data-column="0"></div>
+                <div class="gameboard-cell" data-column="1"></div>
+                <div class="gameboard-cell" data-column="2"></div>
+                <div class="gameboard-cell" data-column="3"></div>
+                <div class="gameboard-cell" data-column="4"></div>
+                <div class="gameboard-cell" data-column="5"></div>
+                <div class="gameboard-cell" data-column="6"></div>
+                <div class="gameboard-cell" data-column="7"></div>
+                <div class="gameboard-cell" data-column="8"></div>
+                <div class="gameboard-cell" data-column="9"></div>
+                <div class="gameboard-cell" data-column="10"></div>
+                <div class="gameboard-cell" data-column="11"></div>
+            </div>
+            <div class="gameboard-row" data-row="9">
+                <div class="gameboard-cell" data-column="0"></div>
+                <div class="gameboard-cell" data-column="1"></div>
+                <div class="gameboard-cell" data-column="2"></div>
+                <div class="gameboard-cell" data-column="3"></div>
+                <div class="gameboard-cell" data-column="4"></div>
+                <div class="gameboard-cell" data-column="5"></div>
+                <div class="gameboard-cell" data-column="6"></div>
+                <div class="gameboard-cell" data-column="7"></div>
+                <div class="gameboard-cell" data-column="8"></div>
+                <div class="gameboard-cell" data-column="9"></div>
+                <div class="gameboard-cell" data-column="10"></div>
+                <div class="gameboard-cell" data-column="11"></div>
+            </div>
+            <div class="gameboard-row" data-row="10">
+                <div class="gameboard-cell" data-column="0"></div>
+                <div class="gameboard-cell" data-column="1"></div>
+                <div class="gameboard-cell" data-column="2"></div>
+                <div class="gameboard-cell" data-column="3"></div>
+                <div class="gameboard-cell" data-column="4"></div>
+                <div class="gameboard-cell" data-column="5"></div>
+                <div class="gameboard-cell" data-column="6"></div>
+                <div class="gameboard-cell" data-column="7"></div>
+                <div class="gameboard-cell" data-column="8"></div>
+                <div class="gameboard-cell" data-column="9"></div>
+                <div class="gameboard-cell" data-column="10"></div>
+                <div class="gameboard-cell" data-column="11"></div>
+            </div>
+            <div class="gameboard-row" data-row="11">
+                <div class="gameboard-cell" data-column="0"></div>
+                <div class="gameboard-cell" data-column="1"></div>
+                <div class="gameboard-cell" data-column="2"></div>
+                <div class="gameboard-cell" data-column="3"></div>
+                <div class="gameboard-cell" data-column="4"></div>
+                <div class="gameboard-cell" data-column="5"></div>
+                <div class="gameboard-cell" data-column="6"></div>
+                <div class="gameboard-cell" data-column="7"></div>
+                <div class="gameboard-cell" data-column="8"></div>
+                <div class="gameboard-cell" data-column="9"></div>
+                <div class="gameboard-cell" data-column="10"></div>
+                <div class="gameboard-cell" data-column="11"></div>
+            </div>
+        </div>
+
+
+
+
+    <div id="footer_container">
+        <div>
+            <a class="button" href="dashboard.php">Return to Dashboard</a>
+            <a class="button" href="logout.php">Log Out</a>
+        </div>
+        <div>
+            <a class="button" href="end_game.php">End Game For Everyone</a>
+            <!-- TODO: Create an undo button that undoes the last move, no matter who it is, and sets the turn back -->
+            <a class="button" href="leave_game.php">Leave Game</a>
+        </div>
+        <div>Hover over a piece and press "r" to rotate!</div>
+    </div>
+
+
+
+    <!-- Add in audio for player turn reminders -->
+    <audio src="sound/next_turn.mp3"></audio>
+    <audio src="sound/your_turn.mp3"></audio>
+
+
+    </div>
+
+</body>
+</html>
