@@ -855,6 +855,8 @@ function rotate_piece(piece) {
     original.addClass("hidden");
 
 
-    // TODO: Reset the z on the rotated piece
+    // Make the new rotated piece have a higher z
+    rotated.css("zIndex", global_z_count);
+    global_z_count++;
 }
 
