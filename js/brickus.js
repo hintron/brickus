@@ -1,4 +1,9 @@
 $(function(){
+    // Determine the gameboard width
+    init_gameboard();
+
+
+
     //
     //// Attach event handlers and initialize code
     //
@@ -47,7 +52,12 @@ $(function(){
 // r is keycode 82
 const R_KEY = 82;
 const MAX_HEIGHT = 700;
-const GAMEBOARD_WIDTH = 12;
+
+
+
+
+
+
 const GAMEBOARD_CELL_WIDTH = 30;
 const GAMEBOARD_CELL_HALF_WIDTH = GAMEBOARD_CELL_WIDTH/2;
 const GAMEBOARD_CELL_BORDER_WIDTH = 1;
@@ -106,9 +116,26 @@ var last_snapped_piece = null;
 // 0, undefined, or null means it is a free space
 // [row][column]
 // See http://stackoverflow.com/a/966239
-var gameboard = new Array(GAMEBOARD_WIDTH);
-for (var i = 0; i < GAMEBOARD_WIDTH; i++) {
-    gameboard[i] = new Array(GAMEBOARD_WIDTH);
+var gameboard = [];
+
+// This will be set in init_gameboard, depending on the HTML
+var GAMEBOARD_WIDTH;
+
+function init_gameboard() {
+    // Get the gameboard width from the gameboard HTML
+    GAMEBOARD_WIDTH = +$("#gameboard").data("width");
+
+    if(!GAMEBOARD_WIDTH){
+        console.log("GAMEBOARD_WIDTH: " + GAMEBOARD_WIDTH);
+        throw new Error("Brickus: Gameboard either does not exist, or the gameboard width is not set in the gameboard HTML!");
+    }
+
+    console.log("Initializing a " + GAMEBOARD_WIDTH + "x" + GAMEBOARD_WIDTH + " gameboard!");
+
+    gamebaord = new Array(GAMEBOARD_WIDTH);
+    for (var i = 0; i < GAMEBOARD_WIDTH; i++) {
+        gameboard[i] = new Array(GAMEBOARD_WIDTH);
+    }
 }
 
 // Start up the pinging service

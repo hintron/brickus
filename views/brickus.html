@@ -3817,8 +3817,11 @@
         <!--     **************        -->
 
         <!-- Use Emmett to easily set the row and column for javascript to easily get access to -->
-        <!-- #gameboard>.gameboard-row[data-row=$@0]*12>.gameboard-cell[data-column=$@0]*12 -->
-        <div id="gameboard">
+        <!-- #gameboard[data-width=20]>.gameboard-row[data-row=$@0]*20>.gameboard-cell[data-column=$@0]*20 -->
+        <!-- NOTE: The javascript will automatically read the data-width attribute to determine the gameboard width-->
+
+
+        <div id="gameboard" data-width="20">
             <div class="gameboard-row" data-row="0">
                 <div class="gameboard-cell" data-column="0"></div>
                 <div class="gameboard-cell" data-column="1"></div>
@@ -3832,6 +3835,14 @@
                 <div class="gameboard-cell" data-column="9"></div>
                 <div class="gameboard-cell" data-column="10"></div>
                 <div class="gameboard-cell" data-column="11"></div>
+                <div class="gameboard-cell" data-column="12"></div>
+                <div class="gameboard-cell" data-column="13"></div>
+                <div class="gameboard-cell" data-column="14"></div>
+                <div class="gameboard-cell" data-column="15"></div>
+                <div class="gameboard-cell" data-column="16"></div>
+                <div class="gameboard-cell" data-column="17"></div>
+                <div class="gameboard-cell" data-column="18"></div>
+                <div class="gameboard-cell" data-column="19"></div>
             </div>
             <div class="gameboard-row" data-row="1">
                 <div class="gameboard-cell" data-column="0"></div>
@@ -3846,6 +3857,14 @@
                 <div class="gameboard-cell" data-column="9"></div>
                 <div class="gameboard-cell" data-column="10"></div>
                 <div class="gameboard-cell" data-column="11"></div>
+                <div class="gameboard-cell" data-column="12"></div>
+                <div class="gameboard-cell" data-column="13"></div>
+                <div class="gameboard-cell" data-column="14"></div>
+                <div class="gameboard-cell" data-column="15"></div>
+                <div class="gameboard-cell" data-column="16"></div>
+                <div class="gameboard-cell" data-column="17"></div>
+                <div class="gameboard-cell" data-column="18"></div>
+                <div class="gameboard-cell" data-column="19"></div>
             </div>
             <div class="gameboard-row" data-row="2">
                 <div class="gameboard-cell" data-column="0"></div>
@@ -3860,6 +3879,14 @@
                 <div class="gameboard-cell" data-column="9"></div>
                 <div class="gameboard-cell" data-column="10"></div>
                 <div class="gameboard-cell" data-column="11"></div>
+                <div class="gameboard-cell" data-column="12"></div>
+                <div class="gameboard-cell" data-column="13"></div>
+                <div class="gameboard-cell" data-column="14"></div>
+                <div class="gameboard-cell" data-column="15"></div>
+                <div class="gameboard-cell" data-column="16"></div>
+                <div class="gameboard-cell" data-column="17"></div>
+                <div class="gameboard-cell" data-column="18"></div>
+                <div class="gameboard-cell" data-column="19"></div>
             </div>
             <div class="gameboard-row" data-row="3">
                 <div class="gameboard-cell" data-column="0"></div>
@@ -3874,6 +3901,14 @@
                 <div class="gameboard-cell" data-column="9"></div>
                 <div class="gameboard-cell" data-column="10"></div>
                 <div class="gameboard-cell" data-column="11"></div>
+                <div class="gameboard-cell" data-column="12"></div>
+                <div class="gameboard-cell" data-column="13"></div>
+                <div class="gameboard-cell" data-column="14"></div>
+                <div class="gameboard-cell" data-column="15"></div>
+                <div class="gameboard-cell" data-column="16"></div>
+                <div class="gameboard-cell" data-column="17"></div>
+                <div class="gameboard-cell" data-column="18"></div>
+                <div class="gameboard-cell" data-column="19"></div>
             </div>
             <div class="gameboard-row" data-row="4">
                 <div class="gameboard-cell" data-column="0"></div>
@@ -3888,6 +3923,14 @@
                 <div class="gameboard-cell" data-column="9"></div>
                 <div class="gameboard-cell" data-column="10"></div>
                 <div class="gameboard-cell" data-column="11"></div>
+                <div class="gameboard-cell" data-column="12"></div>
+                <div class="gameboard-cell" data-column="13"></div>
+                <div class="gameboard-cell" data-column="14"></div>
+                <div class="gameboard-cell" data-column="15"></div>
+                <div class="gameboard-cell" data-column="16"></div>
+                <div class="gameboard-cell" data-column="17"></div>
+                <div class="gameboard-cell" data-column="18"></div>
+                <div class="gameboard-cell" data-column="19"></div>
             </div>
             <div class="gameboard-row" data-row="5">
                 <div class="gameboard-cell" data-column="0"></div>
@@ -3902,6 +3945,14 @@
                 <div class="gameboard-cell" data-column="9"></div>
                 <div class="gameboard-cell" data-column="10"></div>
                 <div class="gameboard-cell" data-column="11"></div>
+                <div class="gameboard-cell" data-column="12"></div>
+                <div class="gameboard-cell" data-column="13"></div>
+                <div class="gameboard-cell" data-column="14"></div>
+                <div class="gameboard-cell" data-column="15"></div>
+                <div class="gameboard-cell" data-column="16"></div>
+                <div class="gameboard-cell" data-column="17"></div>
+                <div class="gameboard-cell" data-column="18"></div>
+                <div class="gameboard-cell" data-column="19"></div>
             </div>
             <div class="gameboard-row" data-row="6">
                 <div class="gameboard-cell" data-column="0"></div>
@@ -3916,6 +3967,14 @@
                 <div class="gameboard-cell" data-column="9"></div>
                 <div class="gameboard-cell" data-column="10"></div>
                 <div class="gameboard-cell" data-column="11"></div>
+                <div class="gameboard-cell" data-column="12"></div>
+                <div class="gameboard-cell" data-column="13"></div>
+                <div class="gameboard-cell" data-column="14"></div>
+                <div class="gameboard-cell" data-column="15"></div>
+                <div class="gameboard-cell" data-column="16"></div>
+                <div class="gameboard-cell" data-column="17"></div>
+                <div class="gameboard-cell" data-column="18"></div>
+                <div class="gameboard-cell" data-column="19"></div>
             </div>
             <div class="gameboard-row" data-row="7">
                 <div class="gameboard-cell" data-column="0"></div>
@@ -3930,6 +3989,14 @@
                 <div class="gameboard-cell" data-column="9"></div>
                 <div class="gameboard-cell" data-column="10"></div>
                 <div class="gameboard-cell" data-column="11"></div>
+                <div class="gameboard-cell" data-column="12"></div>
+                <div class="gameboard-cell" data-column="13"></div>
+                <div class="gameboard-cell" data-column="14"></div>
+                <div class="gameboard-cell" data-column="15"></div>
+                <div class="gameboard-cell" data-column="16"></div>
+                <div class="gameboard-cell" data-column="17"></div>
+                <div class="gameboard-cell" data-column="18"></div>
+                <div class="gameboard-cell" data-column="19"></div>
             </div>
             <div class="gameboard-row" data-row="8">
                 <div class="gameboard-cell" data-column="0"></div>
@@ -3944,6 +4011,14 @@
                 <div class="gameboard-cell" data-column="9"></div>
                 <div class="gameboard-cell" data-column="10"></div>
                 <div class="gameboard-cell" data-column="11"></div>
+                <div class="gameboard-cell" data-column="12"></div>
+                <div class="gameboard-cell" data-column="13"></div>
+                <div class="gameboard-cell" data-column="14"></div>
+                <div class="gameboard-cell" data-column="15"></div>
+                <div class="gameboard-cell" data-column="16"></div>
+                <div class="gameboard-cell" data-column="17"></div>
+                <div class="gameboard-cell" data-column="18"></div>
+                <div class="gameboard-cell" data-column="19"></div>
             </div>
             <div class="gameboard-row" data-row="9">
                 <div class="gameboard-cell" data-column="0"></div>
@@ -3958,6 +4033,14 @@
                 <div class="gameboard-cell" data-column="9"></div>
                 <div class="gameboard-cell" data-column="10"></div>
                 <div class="gameboard-cell" data-column="11"></div>
+                <div class="gameboard-cell" data-column="12"></div>
+                <div class="gameboard-cell" data-column="13"></div>
+                <div class="gameboard-cell" data-column="14"></div>
+                <div class="gameboard-cell" data-column="15"></div>
+                <div class="gameboard-cell" data-column="16"></div>
+                <div class="gameboard-cell" data-column="17"></div>
+                <div class="gameboard-cell" data-column="18"></div>
+                <div class="gameboard-cell" data-column="19"></div>
             </div>
             <div class="gameboard-row" data-row="10">
                 <div class="gameboard-cell" data-column="0"></div>
@@ -3972,6 +4055,14 @@
                 <div class="gameboard-cell" data-column="9"></div>
                 <div class="gameboard-cell" data-column="10"></div>
                 <div class="gameboard-cell" data-column="11"></div>
+                <div class="gameboard-cell" data-column="12"></div>
+                <div class="gameboard-cell" data-column="13"></div>
+                <div class="gameboard-cell" data-column="14"></div>
+                <div class="gameboard-cell" data-column="15"></div>
+                <div class="gameboard-cell" data-column="16"></div>
+                <div class="gameboard-cell" data-column="17"></div>
+                <div class="gameboard-cell" data-column="18"></div>
+                <div class="gameboard-cell" data-column="19"></div>
             </div>
             <div class="gameboard-row" data-row="11">
                 <div class="gameboard-cell" data-column="0"></div>
@@ -3986,9 +4077,198 @@
                 <div class="gameboard-cell" data-column="9"></div>
                 <div class="gameboard-cell" data-column="10"></div>
                 <div class="gameboard-cell" data-column="11"></div>
+                <div class="gameboard-cell" data-column="12"></div>
+                <div class="gameboard-cell" data-column="13"></div>
+                <div class="gameboard-cell" data-column="14"></div>
+                <div class="gameboard-cell" data-column="15"></div>
+                <div class="gameboard-cell" data-column="16"></div>
+                <div class="gameboard-cell" data-column="17"></div>
+                <div class="gameboard-cell" data-column="18"></div>
+                <div class="gameboard-cell" data-column="19"></div>
+            </div>
+            <div class="gameboard-row" data-row="12">
+                <div class="gameboard-cell" data-column="0"></div>
+                <div class="gameboard-cell" data-column="1"></div>
+                <div class="gameboard-cell" data-column="2"></div>
+                <div class="gameboard-cell" data-column="3"></div>
+                <div class="gameboard-cell" data-column="4"></div>
+                <div class="gameboard-cell" data-column="5"></div>
+                <div class="gameboard-cell" data-column="6"></div>
+                <div class="gameboard-cell" data-column="7"></div>
+                <div class="gameboard-cell" data-column="8"></div>
+                <div class="gameboard-cell" data-column="9"></div>
+                <div class="gameboard-cell" data-column="10"></div>
+                <div class="gameboard-cell" data-column="11"></div>
+                <div class="gameboard-cell" data-column="12"></div>
+                <div class="gameboard-cell" data-column="13"></div>
+                <div class="gameboard-cell" data-column="14"></div>
+                <div class="gameboard-cell" data-column="15"></div>
+                <div class="gameboard-cell" data-column="16"></div>
+                <div class="gameboard-cell" data-column="17"></div>
+                <div class="gameboard-cell" data-column="18"></div>
+                <div class="gameboard-cell" data-column="19"></div>
+            </div>
+            <div class="gameboard-row" data-row="13">
+                <div class="gameboard-cell" data-column="0"></div>
+                <div class="gameboard-cell" data-column="1"></div>
+                <div class="gameboard-cell" data-column="2"></div>
+                <div class="gameboard-cell" data-column="3"></div>
+                <div class="gameboard-cell" data-column="4"></div>
+                <div class="gameboard-cell" data-column="5"></div>
+                <div class="gameboard-cell" data-column="6"></div>
+                <div class="gameboard-cell" data-column="7"></div>
+                <div class="gameboard-cell" data-column="8"></div>
+                <div class="gameboard-cell" data-column="9"></div>
+                <div class="gameboard-cell" data-column="10"></div>
+                <div class="gameboard-cell" data-column="11"></div>
+                <div class="gameboard-cell" data-column="12"></div>
+                <div class="gameboard-cell" data-column="13"></div>
+                <div class="gameboard-cell" data-column="14"></div>
+                <div class="gameboard-cell" data-column="15"></div>
+                <div class="gameboard-cell" data-column="16"></div>
+                <div class="gameboard-cell" data-column="17"></div>
+                <div class="gameboard-cell" data-column="18"></div>
+                <div class="gameboard-cell" data-column="19"></div>
+            </div>
+            <div class="gameboard-row" data-row="14">
+                <div class="gameboard-cell" data-column="0"></div>
+                <div class="gameboard-cell" data-column="1"></div>
+                <div class="gameboard-cell" data-column="2"></div>
+                <div class="gameboard-cell" data-column="3"></div>
+                <div class="gameboard-cell" data-column="4"></div>
+                <div class="gameboard-cell" data-column="5"></div>
+                <div class="gameboard-cell" data-column="6"></div>
+                <div class="gameboard-cell" data-column="7"></div>
+                <div class="gameboard-cell" data-column="8"></div>
+                <div class="gameboard-cell" data-column="9"></div>
+                <div class="gameboard-cell" data-column="10"></div>
+                <div class="gameboard-cell" data-column="11"></div>
+                <div class="gameboard-cell" data-column="12"></div>
+                <div class="gameboard-cell" data-column="13"></div>
+                <div class="gameboard-cell" data-column="14"></div>
+                <div class="gameboard-cell" data-column="15"></div>
+                <div class="gameboard-cell" data-column="16"></div>
+                <div class="gameboard-cell" data-column="17"></div>
+                <div class="gameboard-cell" data-column="18"></div>
+                <div class="gameboard-cell" data-column="19"></div>
+            </div>
+            <div class="gameboard-row" data-row="15">
+                <div class="gameboard-cell" data-column="0"></div>
+                <div class="gameboard-cell" data-column="1"></div>
+                <div class="gameboard-cell" data-column="2"></div>
+                <div class="gameboard-cell" data-column="3"></div>
+                <div class="gameboard-cell" data-column="4"></div>
+                <div class="gameboard-cell" data-column="5"></div>
+                <div class="gameboard-cell" data-column="6"></div>
+                <div class="gameboard-cell" data-column="7"></div>
+                <div class="gameboard-cell" data-column="8"></div>
+                <div class="gameboard-cell" data-column="9"></div>
+                <div class="gameboard-cell" data-column="10"></div>
+                <div class="gameboard-cell" data-column="11"></div>
+                <div class="gameboard-cell" data-column="12"></div>
+                <div class="gameboard-cell" data-column="13"></div>
+                <div class="gameboard-cell" data-column="14"></div>
+                <div class="gameboard-cell" data-column="15"></div>
+                <div class="gameboard-cell" data-column="16"></div>
+                <div class="gameboard-cell" data-column="17"></div>
+                <div class="gameboard-cell" data-column="18"></div>
+                <div class="gameboard-cell" data-column="19"></div>
+            </div>
+            <div class="gameboard-row" data-row="16">
+                <div class="gameboard-cell" data-column="0"></div>
+                <div class="gameboard-cell" data-column="1"></div>
+                <div class="gameboard-cell" data-column="2"></div>
+                <div class="gameboard-cell" data-column="3"></div>
+                <div class="gameboard-cell" data-column="4"></div>
+                <div class="gameboard-cell" data-column="5"></div>
+                <div class="gameboard-cell" data-column="6"></div>
+                <div class="gameboard-cell" data-column="7"></div>
+                <div class="gameboard-cell" data-column="8"></div>
+                <div class="gameboard-cell" data-column="9"></div>
+                <div class="gameboard-cell" data-column="10"></div>
+                <div class="gameboard-cell" data-column="11"></div>
+                <div class="gameboard-cell" data-column="12"></div>
+                <div class="gameboard-cell" data-column="13"></div>
+                <div class="gameboard-cell" data-column="14"></div>
+                <div class="gameboard-cell" data-column="15"></div>
+                <div class="gameboard-cell" data-column="16"></div>
+                <div class="gameboard-cell" data-column="17"></div>
+                <div class="gameboard-cell" data-column="18"></div>
+                <div class="gameboard-cell" data-column="19"></div>
+            </div>
+            <div class="gameboard-row" data-row="17">
+                <div class="gameboard-cell" data-column="0"></div>
+                <div class="gameboard-cell" data-column="1"></div>
+                <div class="gameboard-cell" data-column="2"></div>
+                <div class="gameboard-cell" data-column="3"></div>
+                <div class="gameboard-cell" data-column="4"></div>
+                <div class="gameboard-cell" data-column="5"></div>
+                <div class="gameboard-cell" data-column="6"></div>
+                <div class="gameboard-cell" data-column="7"></div>
+                <div class="gameboard-cell" data-column="8"></div>
+                <div class="gameboard-cell" data-column="9"></div>
+                <div class="gameboard-cell" data-column="10"></div>
+                <div class="gameboard-cell" data-column="11"></div>
+                <div class="gameboard-cell" data-column="12"></div>
+                <div class="gameboard-cell" data-column="13"></div>
+                <div class="gameboard-cell" data-column="14"></div>
+                <div class="gameboard-cell" data-column="15"></div>
+                <div class="gameboard-cell" data-column="16"></div>
+                <div class="gameboard-cell" data-column="17"></div>
+                <div class="gameboard-cell" data-column="18"></div>
+                <div class="gameboard-cell" data-column="19"></div>
+            </div>
+            <div class="gameboard-row" data-row="18">
+                <div class="gameboard-cell" data-column="0"></div>
+                <div class="gameboard-cell" data-column="1"></div>
+                <div class="gameboard-cell" data-column="2"></div>
+                <div class="gameboard-cell" data-column="3"></div>
+                <div class="gameboard-cell" data-column="4"></div>
+                <div class="gameboard-cell" data-column="5"></div>
+                <div class="gameboard-cell" data-column="6"></div>
+                <div class="gameboard-cell" data-column="7"></div>
+                <div class="gameboard-cell" data-column="8"></div>
+                <div class="gameboard-cell" data-column="9"></div>
+                <div class="gameboard-cell" data-column="10"></div>
+                <div class="gameboard-cell" data-column="11"></div>
+                <div class="gameboard-cell" data-column="12"></div>
+                <div class="gameboard-cell" data-column="13"></div>
+                <div class="gameboard-cell" data-column="14"></div>
+                <div class="gameboard-cell" data-column="15"></div>
+                <div class="gameboard-cell" data-column="16"></div>
+                <div class="gameboard-cell" data-column="17"></div>
+                <div class="gameboard-cell" data-column="18"></div>
+                <div class="gameboard-cell" data-column="19"></div>
+            </div>
+            <div class="gameboard-row" data-row="19">
+                <div class="gameboard-cell" data-column="0"></div>
+                <div class="gameboard-cell" data-column="1"></div>
+                <div class="gameboard-cell" data-column="2"></div>
+                <div class="gameboard-cell" data-column="3"></div>
+                <div class="gameboard-cell" data-column="4"></div>
+                <div class="gameboard-cell" data-column="5"></div>
+                <div class="gameboard-cell" data-column="6"></div>
+                <div class="gameboard-cell" data-column="7"></div>
+                <div class="gameboard-cell" data-column="8"></div>
+                <div class="gameboard-cell" data-column="9"></div>
+                <div class="gameboard-cell" data-column="10"></div>
+                <div class="gameboard-cell" data-column="11"></div>
+                <div class="gameboard-cell" data-column="12"></div>
+                <div class="gameboard-cell" data-column="13"></div>
+                <div class="gameboard-cell" data-column="14"></div>
+                <div class="gameboard-cell" data-column="15"></div>
+                <div class="gameboard-cell" data-column="16"></div>
+                <div class="gameboard-cell" data-column="17"></div>
+                <div class="gameboard-cell" data-column="18"></div>
+                <div class="gameboard-cell" data-column="19"></div>
             </div>
         </div>
 
+
+
+        <!--     **************        -->
+        <!--     End Gameboard         -->
+        <!--     **************        -->
 
 
 
