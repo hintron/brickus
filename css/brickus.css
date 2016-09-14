@@ -34,10 +34,10 @@ a.button {
 .toolbar {
     /* Let height auto-fill */
     /* TODO: What to do about height? */
-    height: 200px;
+    /*height: 200px;*/
     /*width: 200px;*/
     font-family: Arial, sans-serif;
-    padding: 0 3px;
+    /*padding: 10px;*/
 }
 
 .score {

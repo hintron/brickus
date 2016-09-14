@@ -179,6 +179,13 @@ function start_pinging(){
                             console.log("Could not determine what color the user is...");
                             break;
                     }
+
+                    // TODO: Hide all the other player's pieces
+                    $(".piece").not("[data-player='" + current_user_player_number + "']").addClass("hidden");
+
+
+
+
                 }
 
                 // Set all the playernames as the users
