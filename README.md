@@ -5,14 +5,17 @@
 Note: Brickus is a completely original and novel game. This game contains no blocks whatsoever - just bricks.
 
 ## Future Improvements
+* Explain how to build the game (Set up php with required modules, MySQL, import db schema, etc.)
+* Undo last turn command (not necessarily the same as undo last piece command!)
 * Multiple ongoing games, and allow user to select which game to play
-* Enforce correct piece placement
-* Simple chat
-* Implement a turn timer
 * Create a win notification
-* Add in more server-side checks to make sure people aren't cheating - keep track of piece values, player scores, and ids server side
 * Use media queries to make sure the game renders on sundry devices
+* Fit the game into the viewport better (don't show the other player's remaining pieces?)
 * Incorporate touch events, so the game will work on touchscreens.
+* Enforce correct piece placement
+* Implement a turn timer
+* Simple chat
+* Add in more server-side checks to make sure people aren't cheating - keep track of piece values, player scores, and ids server side
 * Only end the game if everyone agrees to
 * Create an AI
 * Create a next-best-move suggestion
