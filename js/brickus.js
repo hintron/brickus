@@ -24,6 +24,21 @@ $(function(){
                 // console.log("Could not find a piece to rotate under the mouse!");
             }
         }
+
+        if (event.keyCode == H_KEY) {
+            console.log("Toggle toolbars to hide");
+            // $(".toolbar").toggle("fast");
+            var toolbars = $(".toolbar");
+            if(toolbars.hasClass("hidden")){
+                toolbars.removeClass("hidden");
+            }
+            else {
+                toolbars.addClass("hidden");
+            }
+        }
+
+
+
     });
 
     // See http://stackoverflow.com/a/6802970 for moving html elements
@@ -49,8 +64,8 @@ $(function(){
     start_pinging();
 });
 
-// r is keycode 82
 const R_KEY = 82;
+const H_KEY = 72;
 const MAX_HEIGHT = 700;
 
 const GAMEBOARD_CELL_WIDTH = 30;
@@ -214,6 +229,7 @@ function start_pinging(){
                 // Reset the gameboard
                 reset_gameboard();
 
+
                 // loop through and render each piece to the game board
                 if(all_pieces){
                     var temp_piece;
@@ -231,6 +247,7 @@ function start_pinging(){
                         else {
                             temp_piece_el = $(".piece[data-id='" + temp_piece.html_piece_id + "'][data-player='" + temp_piece.player_number + "']");
                         }
+
                         // If this is a hidden piece, unhide it and hide the other one
                         if(temp_piece_el.hasClass("hidden")){
                             // Find the unhidden one and hide it

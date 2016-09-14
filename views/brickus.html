@@ -21,6 +21,7 @@
         Multiple pieces can have the same id, with different rotate ids
         Rotate count will indicate how many times the piece can be rotated (if not set, it means it can't be rotated)
         All but one of the rotated versions of each piece should always be hidden
+        Use Emmet to easily create the html for all the pieces
      -->
 
 <!--
@@ -5515,9 +5516,17 @@
 
     <div id="header_container">
         <div>
-            Turn: <span id="player_turn">*********</span>
+            <a class="button" href="dashboard.php">Return to Dashboard</a>
+            <a class="button" href="logout.php">Log Out</a>
+            <a class="button" href="leave_game.php">Leave Game</a>
+            <a class="button" href="end_game.php">End Game For Everyone</a>
+            <!-- TODO: Create an undo button that undoes the last move, no matter who it is, and sets the turn back -->
         </div>
+
+
+        <div>Hover over a piece and press "r" to rotate!</div>
         <div>
+            Turn: <span id="player_turn">*********</span>
             <button class="button" id="finish_turn_btn">Finish Turn</button>
         </div>
     </div>
@@ -5986,16 +5995,7 @@
 
 
     <div id="footer_container">
-        <div>
-            <a class="button" href="dashboard.php">Return to Dashboard</a>
-            <a class="button" href="logout.php">Log Out</a>
-        </div>
-        <div>
-            <a class="button" href="end_game.php">End Game For Everyone</a>
-            <!-- TODO: Create an undo button that undoes the last move, no matter who it is, and sets the turn back -->
-            <a class="button" href="leave_game.php">Leave Game</a>
-        </div>
-        <div>Hover over a piece and press "r" to rotate!</div>
+
     </div>
 
 

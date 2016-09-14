@@ -7,6 +7,7 @@ Note: Brickus is a completely original and novel game. This game contains no blo
 ## Future Improvements
 * Explain how to build the game (Set up php with required modules, MySQL, import db schema, etc.)
 * Undo last turn command (not necessarily the same as undo last piece command!)
+* Improve color schemes via Adobe color picker (https://color.adobe.com/create/color-wheel/)
 * Multiple ongoing games, and allow user to select which game to play
 * Create a win notification
 * Use media queries to make sure the game renders on sundry devices
