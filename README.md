@@ -11,6 +11,11 @@ Note: Brickus is a completely original and novel game. This game contains no blo
 * Implement a turn timer
 * Create a win notification
 * Add in more server-side checks to make sure people aren't cheating - keep track of piece values, player scores, and ids server side
+* Use media queries to make sure the game renders on sundry devices
+* Incorporate touch events, so the game will work on touchscreens.
+* Only end the game if everyone agrees to
+* Create an AI
+* Create a next-best-move suggestion
 
 ---
 
