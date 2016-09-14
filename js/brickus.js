@@ -53,11 +53,6 @@ $(function(){
 const R_KEY = 82;
 const MAX_HEIGHT = 700;
 
-
-
-
-
-
 const GAMEBOARD_CELL_WIDTH = 30;
 const GAMEBOARD_CELL_HALF_WIDTH = GAMEBOARD_CELL_WIDTH/2;
 const GAMEBOARD_CELL_BORDER_WIDTH = 1;
@@ -367,7 +362,7 @@ function finish_turn_handler() {
         return;
     }
 
-    console.log(last_snapped_piece);
+    // console.log(last_snapped_piece);
 
     // Send data on the piece that was placed
     // NOTE: Don't need to send player info, since that will be contained in the session vars
