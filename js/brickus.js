@@ -512,8 +512,8 @@ function mousemove_handler(mouse_event) {
     }
 
     // Save the current location of the mouse for rotation
-    current_mouse_pos_x = mouse_event.pageX;
-    current_mouse_pos_y = mouse_event.pageY;
+    current_mouse_pos_x = mouse_event.pageX - window.pageXOffset;
+    current_mouse_pos_y = mouse_event.pageY - window.pageYOffset;
 }
 
 function mouseup_handler(mouse_event) {
