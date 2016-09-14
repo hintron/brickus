@@ -33,8 +33,9 @@ a.button {
 
 .toolbar {
     /* Let height auto-fill */
-    height: 800px;
-    width: 200px;
+    /* TODO: What to do about height? */
+    height: 200px;
+    /*width: 200px;*/
     font-family: Arial, sans-serif;
     padding: 0 3px;
 }
@@ -44,24 +45,24 @@ a.button {
 }
 
 #player1_toolbar {
-    float: left;
+    /*float: left;*/
     background-color: yellow;
 }
 
 #player2_toolbar {
-    float: left;
+    /*float: left;*/
     background-color: blue;
     color: #eeeeee;
 }
 
 #player3_toolbar {
-    float: right;
+    /*float: right;*/
     background-color: red;
     color: #eeeeee;
 }
 
 #player4_toolbar {
-    float: right;
+    /*float: right;*/
     background-color: green;
     color: #eeeeee;
 }
@@ -173,7 +174,7 @@ a.button {
     so that my piece movement logic works */
     overflow: hidden;
     /* Show the true size of the pieces */
-    /* border: 1px dotted; */
+    /*border: 1px dotted;*/
 }
 
 .tile_row {

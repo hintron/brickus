@@ -47,13 +47,11 @@ $(function(){
         var piece = $(pieces[i]);
         piece.on("mousedown", mousedown_handler);
         // Set all pieces to absolute positioning now that they are rendered
-        // Get bounding rect
-        // See http://stackoverflow.com/a/11396681
-        var rect = pieces[i].getBoundingClientRect();
+        // This is the same thing as using getBoundingClientRect(), but with jquery
+        var offset = piece.offset();
+        // Reset the coordinates to where it was, since setting to absolute moves the piece
         piece.css( "position", "absolute");
-        // Reset the coordinates to where it was, since setting to absolute move the piece
-        piece.css( "left", (rect.left + window.pageXOffset) + "px");
-        piece.css( "top", (rect.top + window.pageYOffset) + "px");
+        piece.offset(offset);
     }
     $(window).on("mousemove", mousemove_handler);
     $(window).on("mouseup", mouseup_handler);
